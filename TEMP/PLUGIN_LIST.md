@@ -14,7 +14,7 @@ This plugin interfaces with active Kubernetes infrastructure to parse error stat
 
 ## Oncall AI Handover Assistant
 
-This plugin automates the collection of shift events, unresolved alerts, and systemic notes to generate structured summary briefs for incoming on-call engineers. 
+This plugin automates the collection of shift events, unresolved alerts, and systemic notes to generate structured summary briefs for incoming on-call engineers.
 
 ## Release Notes AI Generator
 
@@ -68,8 +68,6 @@ This plugin automatically parses your markdown documentation trees to identify a
 
 This plugin aggregates timeline sequences from Slack channels, incident management systems, and monitoring platforms to automatically draft comprehensive post-mortem incidents.
 
-
 ## Tech Radar AI Manager
 
 This plugin continuously scans internal repositories and software lifecycle telemetry to automatically recommend status promotions or deprecations on your company's Technology Radar.
-

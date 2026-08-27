@@ -10,8 +10,7 @@ export const defaultCompliancePageContent: CompliancePageContent = {
     title: "Security and compliance for open-source AI workflows",
     description:
       "AI Crew Suite is built with security-first principles, focusing on transparency, vulnerability management, and secure development practices for our agentic workflow plugins.",
-    note:
-      "As an open-source project, we prioritize transparency in our security practices and welcome community feedback on security improvements.",
+    note: "As an open-source project, we prioritize transparency in our security practices and welcome community feedback on security improvements.",
     checklistEyebrow: "Security checklist",
     checklistItems: [
       { text: "Regular security audits and code reviews" },

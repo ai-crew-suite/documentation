@@ -21,7 +21,8 @@ const signupValues: SignupFormValues = {
 const attribution = {
   fbclid: "facebook-click-id",
   gclid: "google-click-id",
-  landing_path: "/pricing?utm_source=newsletter&utm_medium=email&utm_campaign=launch",
+  landing_path:
+    "/pricing?utm_source=newsletter&utm_medium=email&utm_campaign=launch",
   referrer: "https://example.com/articles/digest-engine",
   referrer_host: "example.com",
   utm_campaign: "launch",
@@ -33,9 +34,12 @@ const attribution = {
 
 describe("marketing conversion helpers", () => {
   it("builds a signup payload with normalized attribution fields", () => {
-    expect(buildSignupSubmissionPayload(signupValues, attribution, "/signup")).toEqual({
+    expect(
+      buildSignupSubmissionPayload(signupValues, attribution, "/signup"),
+    ).toEqual({
       attribution_campaign: "launch",
-      attribution_landing_path: "/pricing?utm_source=newsletter&utm_medium=email&utm_campaign=launch",
+      attribution_landing_path:
+        "/pricing?utm_source=newsletter&utm_medium=email&utm_campaign=launch",
       attribution_medium: "email",
       attribution_referrer: "https://example.com/articles/digest-engine",
       attribution_referrer_host: "example.com",
@@ -59,9 +63,12 @@ describe("marketing conversion helpers", () => {
   });
 
   it("builds a standardized GTM conversion event for signup", () => {
-    expect(buildSignupSubmittedDataLayerEvent(signupValues, attribution, "/signup")).toEqual({
+    expect(
+      buildSignupSubmittedDataLayerEvent(signupValues, attribution, "/signup"),
+    ).toEqual({
       attribution_campaign: "launch",
-      attribution_landing_path: "/pricing?utm_source=newsletter&utm_medium=email&utm_campaign=launch",
+      attribution_landing_path:
+        "/pricing?utm_source=newsletter&utm_medium=email&utm_campaign=launch",
       attribution_medium: "email",
       attribution_referrer: "https://example.com/articles/digest-engine",
       attribution_referrer_host: "example.com",
@@ -92,9 +99,13 @@ describe("marketing conversion helpers", () => {
       { name: "attribution_campaign", value: "launch" },
       {
         name: "attribution_landing_path",
-        value: "/pricing?utm_source=newsletter&utm_medium=email&utm_campaign=launch",
+        value:
+          "/pricing?utm_source=newsletter&utm_medium=email&utm_campaign=launch",
       },
-      { name: "attribution_referrer", value: "https://example.com/articles/digest-engine" },
+      {
+        name: "attribution_referrer",
+        value: "https://example.com/articles/digest-engine",
+      },
       { name: "attribution_referrer_host", value: "example.com" },
       { name: "utm_source", value: "newsletter" },
       { name: "utm_medium", value: "email" },

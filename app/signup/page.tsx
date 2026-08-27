@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
 
 import { PageSection } from "@/components/Section";
 import { Button } from "@/components/shared/button";
@@ -28,8 +27,6 @@ export default async function SignupPage() {
               {content.hero.badge}
             </span>
 
-
-
             <div className="space-y-5">
               <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-primary sm:text-5xl lg:text-6xl">
                 {content.hero.title}
@@ -47,7 +44,9 @@ export default async function SignupPage() {
                 size="lg"
                 className="h-12 rounded-full px-6 text-lg font-semibold"
               >
-                <Link href={content.hero.primaryAction.link}>{content.hero.primaryAction.text}</Link>
+                <Link href={content.hero.primaryAction.link}>
+                  {content.hero.primaryAction.text}
+                </Link>
               </Button>
 
               <Button
@@ -56,7 +55,9 @@ export default async function SignupPage() {
                 size="lg"
                 className="h-12 rounded-full px-6 text-lg font-semibold"
               >
-                <Link href={content.hero.secondaryAction.link}>{content.hero.secondaryAction.text}</Link>
+                <Link href={content.hero.secondaryAction.link}>
+                  {content.hero.secondaryAction.text}
+                </Link>
               </Button>
             </div>
 
@@ -91,7 +92,10 @@ export default async function SignupPage() {
           </p>
         </div>
 
-        <ol className="mt-4 sm:mt-8 grid gap-4 md:grid-cols-3" aria-label="Signup next steps">
+        <ol
+          className="mt-4 sm:mt-8 grid gap-4 md:grid-cols-3"
+          aria-label="Signup next steps"
+        >
           {content.nextStepsSection.items.map((step: string, index: number) => (
             <li
               key={step}

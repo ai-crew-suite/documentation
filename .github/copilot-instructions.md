@@ -23,9 +23,9 @@ You are working in Digest Engine, a Django + DRF + Celery + Qdrant backend with 
 - Project scoping is a core invariant. Most API resources are nested under `/api/v1/projects/{project_id}/...`.
 - Treat `core/` as the home for genuine cross-cutting concerns only. New app-owned runtime logic should live with its owning app rather than expanding `core/`.
 - Reuse the established DRF patterns in `core/api.py`, `core/api_urls.py`, and `core/serializer_mixins.py`:
-	- `ProjectOwnedQuerysetMixin` for nested viewsets
-	- serializer context containing `project`
-	- explicit validation for cross-project foreign keys
+  - `ProjectOwnedQuerysetMixin` for nested viewsets
+  - serializer context containing `project`
+  - explicit validation for cross-project foreign keys
 - Keep viewsets and views thin. Put operational logic in `core/tasks.py`, `core/pipeline.py`, `ingestion/plugins/`, `newsletters/intake.py`, or nearby helpers owned by the feature's app.
 - Preserve existing API field shapes. Backend serializers and frontend types currently use `snake_case`; do not introduce ad hoc `camelCase` transforms.
 - When API behavior changes, update drf-spectacular schema metadata in `core/api.py`.
@@ -68,12 +68,12 @@ You are working in Digest Engine, a Django + DRF + Celery + Qdrant backend with 
 - Frontend tests use `vitest`.
 - Prefer focused validation commands over full-suite runs when the change is localized.
 - Common commands in this repo:
-	- `pytest core/tests/...`
-	- `python manage.py check`
-	- `just backend-lint`
-	- `cd frontend && npm run test`
-	- `cd frontend && npm run typecheck`
-	- `just frontend-lint`
+  - `pytest core/tests/...`
+  - `python manage.py check`
+  - `just backend-lint`
+  - `cd frontend && npm run test`
+  - `cd frontend && npm run typecheck`
+  - `just frontend-lint`
 - Prefer existing `just` tasks when they cover the needed validation flow.
 
 ## Skill Usage

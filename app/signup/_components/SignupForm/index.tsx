@@ -35,7 +35,8 @@ export default function SignupForm() {
             Get AI Crew Suite updates
           </h3>
           <p className="mt-2 text-sm leading-6 text-content-offset">
-            Receive product announcements, workflow tips, and occasional experiments.
+            Receive product announcements, workflow tips, and occasional
+            experiments.
           </p>
         </div>
 
@@ -72,8 +73,8 @@ export default function SignupForm() {
         )}
 
         <p className="text-xs text-content-offset">
-          By subscribing, you agree to receive our newsletter. You can unsubscribe at any time.
-          We respect your privacy.
+          By subscribing, you agree to receive our newsletter. You can
+          unsubscribe at any time. We respect your privacy.
         </p>
       </div>
     </div>

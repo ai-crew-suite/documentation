@@ -22,7 +22,8 @@ import {
 } from "./types";
 
 export const defaultHeroProps: IHeroProps = {
-  title: "AI Crew Suite: Eighteen agentic workflow plugins for Spotify's Backstage IDP",
+  title:
+    "AI Crew Suite: Eighteen agentic workflow plugins for Spotify&apos;s Backstage IDP",
   description:
     "Supercharge your Backstage developer portal with AI-powered workflows. Automate software delivery, infrastructure management, and developer onboarding with intelligent agents.",
   btnGetStarted: {
@@ -35,7 +36,7 @@ export const defaultCtaProps: ICtaProps = {
   eyebrow: "Start your first workflow",
   title: "Turn scattered systems into automated workflows you can trust.",
   description:
-    "Connect the plugins you already use, train one project on your team's workflow preferences, and let the next deployment start with ranked tasks, summaries, and a draft pipeline instead of a pile of scripts.",
+    "Connect the plugins you already use, train one project on your team&apos;s workflow preferences, and let the next deployment start with ranked tasks, summaries, and a draft pipeline instead of a pile of scripts.",
   badges: [
     "Plugin-scoped automation",
     "Agent memory",
@@ -68,14 +69,15 @@ export const defaultCtaProps: ICtaProps = {
 };
 
 export const defaultProblemsProps: IProblemsProps = {
-  eyebrow: "The real struggle of developer productivity isn't adding more tools",
+  eyebrow:
+    "The real struggle of developer productivity isn&apos;t adding more tools",
   title:
     "Orchestrating complex workflows across multiple systems without creating chaos.",
   description:
     "Existing workflow tools solve about a third of this problem. They rely on manual triggers and static templates, lacking adaptive intelligence and context-awareness.",
   toolsHeading: "Why current workflow tools break down",
   toolsDescription:
-    "Existing automation tools like Zapier, Jenkins, and generic RPA products rely on predefined rules. They do not understand your team's preferences, they cannot tell you when three services in your stack already handle a similar task, and they have no concept of dependencies or your architectural standards.",
+    "Existing automation tools like Zapier, Jenkins, and generic RPA products rely on predefined rules. They do not understand your team&apos;s preferences, they cannot tell you when three services in your stack already handle a similar task, and they have no concept of dependencies or your architectural standards.",
   toolFailures: [
     {
       title: <>Generic automation&nbsp;vs&nbsp;domain-specific workflows</>,
@@ -90,7 +92,7 @@ export const defaultProblemsProps: IProblemsProps = {
     {
       title: "Lack of context awareness",
       description:
-        "They have no concept of dependencies and zero understanding of your team's workflow preferences.",
+        "They have no concept of dependencies and zero understanding of your team&apos;s workflow preferences.",
     },
   ],
 };
@@ -115,11 +117,11 @@ export const defaultSolutionProps: ISolutionProps = {
     {
       title: "Let the agents orchestrate",
       description:
-        "Every new task is embedded into a per-project vector space, scored against your reference corpus, deduped against everything ingested so far, classified, and summarized. Ambiguous tasks get routed through an LLM that knows your project's brief.",
+        "Every new task is embedded into a per-project vector space, scored against your reference corpus, deduped against everything ingested so far, classified, and summarized. Ambiguous tasks get routed through an LLM that knows your project&apos;s brief.",
       image: solutionImage03,
     },
     {
-      title: "Monitor, don't micromanage",
+      title: "Monitor, don&apos;t micromanage",
       description:
         "Open the dashboard, view a ranked shortlist of automated workflows with summaries and dependency signals already attached, then give feedback on the successes and failures so the model keeps adapting.",
       image: solutionImage04,
@@ -134,55 +136,64 @@ export const defaultFeatureItems: IFeaturesProps = {
   items: [
     {
       title: "Infrastructure Provisioning Agent",
-      description: "Automatically provision cloud resources based on policy and demand, with approval workflows and cost controls.",
+      description:
+        "Automatically provision cloud resources based on policy and demand, with approval workflows and cost controls.",
       image: featureImage01,
       link: "/docs/infrastructure-provisioning-agent",
     },
     {
       title: "CI/CD Automation",
-      description: "Orchestrate CI/CD pipelines with intelligent branch management, test selection, and deployment gating.",
+      description:
+        "Orchestrate CI/CD pipelines with intelligent branch management, test selection, and deployment gating.",
       image: featureImage02,
       link: "/docs/ci-cd-automation",
     },
     {
       title: "Security Compliance Checker",
-      description: "Continuously scan your infrastructure and code for compliance violations, with automated remediation suggestions.",
+      description:
+        "Continuously scan your infrastructure and code for compliance violations, with automated remediation suggestions.",
       image: featureImage03,
       link: "/docs/security-compliance-checker",
     },
     {
       title: "Incident Response Bot",
-      description: "Detect incidents, automatically gather context, and coordinate response actions across teams and tools.",
+      description:
+        "Detect incidents, automatically gather context, and coordinate response actions across teams and tools.",
       image: featureImage04,
       link: "/docs/incident-response-bot",
     },
     {
       title: "Documentation Generator",
-      description: "Keep documentation up-to-date by automatically generating and updating docs based on code changes and system state.",
+      description:
+        "Keep documentation up-to-date by automatically generating and updating docs based on code changes and system state.",
       image: featureImage05,
       link: "/docs/documentation-generator",
     },
     {
       title: "Cost Optimizer",
-      description: "Identify unused resources, suggest resizing opportunities, and enforce budget policies across your cloud accounts.",
+      description:
+        "Identify unused resources, suggest resizing opportunities, and enforce budget policies across your cloud accounts.",
       image: featureImage06,
       link: "/docs/cost-optimizer",
     },
     {
       title: "Service Catalog Enricher",
-      description: "Automatically enrich Backstage service catalog entries with ownership, dependencies, metrics, and compliance status.",
+      description:
+        "Automatically enrich Backstage service catalog entries with ownership, dependencies, metrics, and compliance status.",
       image: featureImage07,
       link: "/docs/service-catalog-enricher",
     },
     {
       title: "Developer Onboarding Assistant",
-      description: "Guide new developers through setup, training, and first contributions with personalized checklists and automated help.",
+      description:
+        "Guide new developers through setup, training, and first contributions with personalized checklists and automated help.",
       image: featureImage08,
       link: "/docs/developer-onboarding-assistant",
     },
     {
       title: "License Compliance Scanner",
-      description: "Scan dependencies for license compliance, track obligations, and automate approval workflows for third-party code.",
+      description:
+        "Scan dependencies for license compliance, track obligations, and automate approval workflows for third-party code.",
       image: featureImage09,
       link: "/docs/license-compliance-scanner",
     },
@@ -202,40 +213,53 @@ export const defaultHomePageFaqProps: IHomePageFaqProps = {
           <p>Three things they don&apos;t do:</p>
           <ol className="mt-3 list-decimal space-y-3 pl-5">
             <li>
-              <strong>Plugin-scoped workflow training.</strong> We ingest your existing Backstage plugins as a first-class source and build a dependency graph from what your team actually uses.
+              <strong>Plugin-scoped workflow training.</strong> We ingest your
+              existing Backstage plugins as a first-class source and build a
+              dependency graph from what your team actually uses.
             </li>
             <li>
-              <strong>Per-project automation tuning via explicit feedback.</strong> Your thumbs-up/thumbs-down drifts a per-project reference centroid. Your automated workflows genuinely improve over time. Theirs don&apos;t.
+              <strong>
+                Per-project automation tuning via explicit feedback.
+              </strong>{" "}
+              Your thumbs-up/thumbs-down drifts a per-project reference
+              centroid. Your automated workflows genuinely improve over time.
+              Theirs don&apos;t.
             </li>
             <li>
-              <strong>A unified service model.</strong> One service, all its dependencies, one profile, one compliance score.
+              <strong>A unified service model.</strong> One service, all its
+              dependencies, one profile, one compliance score.
             </li>
           </ol>
           <p className="mt-3">
-            We also retain workflow history indefinitely for long-term trend analysis, where most tools time out after a week.
+            We also retain workflow history indefinitely for long-term trend
+            analysis, where most tools time out after a week.
           </p>
         </>
       ),
     },
     {
-      question: "I don't use Backstage. I just want to orchestrate internal workflows / CI/CD / compliance checks. Does this work?",
+      question:
+        "I don&apos;t use Backstage. I just want to orchestrate internal workflows / CI/CD / compliance checks. Does this work?",
       answer:
-        "Yes. A \"Backstage project\" is just a project-scoped automation pipeline. The UI assembly step is optional. You can use AI Crew Suite as a pure workflow‑orchestration tool and ignore the Backstage side entirely.",
+        'Yes. A "Backstage project" is just a project-scoped automation pipeline. The UI assembly step is optional. You can use AI Crew Suite as a pure workflow‑orchestration tool and ignore the Backstage side entirely.',
     },
     {
       question: "How does this handle private APIs or internal systems?",
       answer:
-        "Plugin connectors handle their own auth, including service accounts, OAuth flows, and custom authentication headers. Anything your team can access, the system can access on your behalf. Anything you can't, it can't.",
+        "Plugin connectors handle their own auth, including service accounts, OAuth flows, and custom authentication headers. Anything your team can access, the system can access on your behalf. Anything you can&apos;t, it can&apos;t.",
     },
     {
       question: "How do I add a new plugin?",
       answer: (
         <>
           <p>
-            Implement three methods on the plugin interface: <code>execute_workflow</code>, <code>get_service_status</code>, <code>health_check</code>.
+            Implement three methods on the plugin interface:{" "}
+            <code>execute_workflow</code>, <code>get_service_status</code>,{" "}
+            <code>health_check</code>.
           </p>
           <p className="mt-3">
-            The core system handles scheduling, retry, error routing, and state writes. Adding a plugin is bounded work, not a refactor.
+            The core system handles scheduling, retry, error routing, and state
+            writes. Adding a plugin is bounded work, not a refactor.
           </p>
         </>
       ),
@@ -250,10 +274,15 @@ export const defaultHomePageFaqProps: IHomePageFaqProps = {
       answer: (
         <>
           <p>
-            No. The core orchestration logic is deterministic state machines against your project's reference corpus. LLMs are only used to break ties in an explicit confidence band, to summarize, to extract entities, and to detect anomalies, each as a swappable, model‑agnostic skill.
+            No. The core orchestration logic is deterministic state machines
+            against your project&apos;s reference corpus. LLMs are only used to break
+            ties in an explicit confidence band, to summarize, to extract
+            entities, and to detect anomalies, each as a swappable,
+            model‑agnostic skill.
           </p>
           <p className="mt-3">
-            If every LLM API went dark tomorrow, you'd still get automated workflows.
+            If every LLM API went dark tomorrow, you&apos;d still get automated
+            workflows.
           </p>
         </>
       ),

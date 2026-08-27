@@ -16,7 +16,9 @@ describe("AttributionCapture", () => {
     render(<AttributionCapture />);
 
     await waitFor(() => {
-      expect(attributionMocks.captureMarketingAttribution).toHaveBeenCalledTimes(1);
+      expect(
+        attributionMocks.captureMarketingAttribution,
+      ).toHaveBeenCalledTimes(1);
     });
   });
 });

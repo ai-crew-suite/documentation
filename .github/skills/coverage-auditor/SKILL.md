@@ -19,11 +19,11 @@ Use this skill to add the smallest effective tests around the changed behavior.
 
 - Analyze the changed file first and cover the real branch points: validation failures, access control, empty states, duplicate handling, service failures, and success paths.
 - For backend work, add tests near the closest existing module, such as:
-	- `core/tests/test_serializers.py`
-	- `core/tests/test_admin.py`
-	- `core/tests/test_tasks.py`
-	- `core/tests/test_newsletters.py`
-	- `core/tests/test_pipeline.py`
+  - `core/tests/test_serializers.py`
+  - `core/tests/test_admin.py`
+  - `core/tests/test_tasks.py`
+  - `core/tests/test_newsletters.py`
+  - `core/tests/test_pipeline.py`
 - For frontend work, add or extend the nearest colocated `*.test.ts` or `*.test.tsx` file beside the owning route, page, or component.
 - When adding new frontend tests, keep imports sorted to satisfy the repo's ESLint import-order rules. If you hit `Run autofix to sort these imports!`, fix the import block or run file-scoped ESLint before moving on.
 - After changing tests, run the narrowest relevant validation command first.

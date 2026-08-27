@@ -83,7 +83,11 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--color-primary) 64%, var(--color-secondary));
+    background: color-mix(
+      in srgb,
+      var(--color-primary) 64%,
+      var(--color-secondary)
+    );
     border-radius: 30px;
   }
 
@@ -110,9 +114,13 @@
     background-image:
       linear-gradient(var(--color-content-offset) 1px, transparent 1px),
       linear-gradient(90deg, var(--color-content-offset) 1px, transparent 1px);
-    background-position: 0 0, 0 0;
+    background-position:
+      0 0,
+      0 0;
     background-repeat: repeat, repeat;
-    background-size: 96px 96px, 96px 96px;
+    background-size:
+      96px 96px,
+      96px 96px;
   }
 }
 

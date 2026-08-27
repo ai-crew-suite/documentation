@@ -24,7 +24,10 @@ export function readConsentPreferences(): ConsentPreferences | null {
   try {
     const parsedValue = JSON.parse(storedValue) as unknown;
 
-    if (!isConsentPreferences(parsedValue) || typeof parsedValue.marketing !== "boolean") {
+    if (
+      !isConsentPreferences(parsedValue) ||
+      typeof parsedValue.marketing !== "boolean"
+    ) {
       return null;
     }
 
@@ -37,13 +40,18 @@ export function readConsentPreferences(): ConsentPreferences | null {
   }
 }
 
-export function writeConsentPreferences(marketing: boolean): ConsentPreferences {
+export function writeConsentPreferences(
+  marketing: boolean,
+): ConsentPreferences {
   const consentPreferences: ConsentPreferences = {
     essential: true,
     marketing,
   };
 
-  window.localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(consentPreferences));
+  window.localStorage.setItem(
+    CONSENT_STORAGE_KEY,
+    JSON.stringify(consentPreferences),
+  );
   window.dispatchEvent(
     new CustomEvent<ConsentPreferences>(MARKETING_CONSENT_CHANGED_EVENT, {
       detail: consentPreferences,

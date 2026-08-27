@@ -55,6 +55,7 @@ Incident Post-Mortem Generator
 ```
 
 Each plugin in the chain receives a **context envelope** containing:
+
 - Previous plugin's findings
 - Evidence collected so far
 - Decisions made
@@ -63,6 +64,7 @@ Each plugin in the chain receives a **context envelope** containing:
 ## Memory Implementation
 
 ### 1. Deterministic Context Gathering
+
 Before any LLM interaction, plugins gather all available context programmatically:
 
 ```typescript
@@ -81,13 +83,17 @@ async function gatherContext(trigger: Trigger): Promise<Context> {
 ###他的话
 
 ### 2. Memory Pruning
+
 To prevent memory bloat, plugins automatically prune:
+
 - Old evidence beyond relevance window
 - Duplicate findings
 - Low-confidence observations
 
 ### 3. Persistence Strategies
+
 Plugins support multiple persistence backends:
+
 - **In-memory** - For single-user sessions
 - **Redis** - For distributed deployments
 - **PostgreSQL** - For audit and compliance requirements
@@ -134,15 +140,19 @@ const diagnosis = await memory.get("diagnosis");
 ## Benefits of Plugin-Scoped Automation
 
 ### 1. Predictable Resource Usage
+
 Each plugin knows its own memory limits and cleans up after itself.
 
 ### 2. Isolated Failures
+
 A bug in one plugin's memory management doesn't affect other plugins.
 
 ### 3. Testability
+
 Plugins can be tested in isolation with mocked memory.
 
 ### 4. Composability
+
 Plugins can be combined in novel ways without redesign.
 
 ## Implementation Guide
@@ -162,10 +172,10 @@ export const myPlugin = createPluginWithMemory({
   workflow: async ({ memory, context }) => {
     // Store evidence
     await memory.set("evidence", context.evidence);
-    
+
     // Retrieve later
     const storedEvidence = await memory.get("evidence");
-    
+
     return { findings: storedEvidence };
   },
 });

@@ -1,16 +1,11 @@
 import { renderToStaticMarkup } from "react-dom/server";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import {
-  defaultCtaProps,
   defaultFeatureItems,
   defaultHeroProps,
   defaultHomePageFaqProps,
-  defaultProblemsProps,
-  defaultSolutionProps,
 } from "@/lib/homePageDefaults";
-
-
 
 import Home from "./page";
 

@@ -27,7 +27,8 @@ describe("Docs catch-all page", () => {
           parent: "reference",
           subcategory: "reference",
         },
-        content: "# Ingestion Pipeline\n\nHow content moves through the system.\n\n## Core Stages\n\n```python\nprint('hello docs')\n```",
+        content:
+          "# Ingestion Pipeline\n\nHow content moves through the system.\n\n## Core Stages\n\n```python\nprint('hello docs')\n```",
         headings: [
           { depth: 1, value: "Ingestion Pipeline", id: "ingestion-pipeline" },
           { depth: 2, value: "Core Stages", id: "core-stages" },
@@ -64,7 +65,8 @@ describe("Docs catch-all page", () => {
         parent: "reference",
         subcategory: "reference",
       },
-      content: "# Ingestion Pipeline\n\nHow content moves through the system.\n\n## Core Stages\n\n```python\nprint('hello docs')\n```",
+      content:
+        "# Ingestion Pipeline\n\nHow content moves through the system.\n\n## Core Stages\n\n```python\nprint('hello docs')\n```",
       headings: [
         { depth: 1, value: "Ingestion Pipeline", id: "ingestion-pipeline" },
         { depth: 2, value: "Core Stages", id: "core-stages" },
@@ -73,7 +75,9 @@ describe("Docs catch-all page", () => {
 
     const { default: Page } = await import("./page");
     const markup = renderToStaticMarkup(
-      await Page({ params: Promise.resolve({ mdxPath: ["reference", "pipeline"] }) }),
+      await Page({
+        params: Promise.resolve({ mdxPath: ["reference", "pipeline"] }),
+      }),
     );
 
     expect(markup).toContain('id="docs-content"');
@@ -92,7 +96,8 @@ describe("Docs catch-all page", () => {
         parent: "reference",
         subcategory: "reference",
       },
-      content: "# Ingestion Pipeline\n\nHow content moves through the system.\n\n## Core Stages\n\n[Core Algorithms](algorithms.md)",
+      content:
+        "# Ingestion Pipeline\n\nHow content moves through the system.\n\n## Core Stages\n\n[Core Algorithms](algorithms.md)",
       headings: [
         { depth: 1, value: "Ingestion Pipeline", id: "ingestion-pipeline" },
         { depth: 2, value: "Core Stages", id: "core-stages" },
@@ -101,7 +106,9 @@ describe("Docs catch-all page", () => {
 
     const { default: Page } = await import("./page");
     const markup = renderToStaticMarkup(
-      await Page({ params: Promise.resolve({ mdxPath: ["reference", "pipeline"] }) }),
+      await Page({
+        params: Promise.resolve({ mdxPath: ["reference", "pipeline"] }),
+      }),
     );
 
     expect(markup).toContain("Ingestion Pipeline");

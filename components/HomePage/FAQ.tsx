@@ -15,9 +15,7 @@ const FAQ: FC<IHomePageFaqProps> = ({ eyebrow, title, description, items }) => {
         <h2 className="mt-3 text-2xl sm:text-3xl font-semibold tracking-tight text-secondary">
           {title}
         </h2>
-        <p className="mt-3 text-base leading-7 text-primary">
-          {description}
-        </p>
+        <p className="mt-3 text-base leading-7 text-primary">{description}</p>
       </div>
 
       <div className="mt-4 sm:mt-8 w-full space-y-3">

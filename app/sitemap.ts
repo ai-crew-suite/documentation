@@ -2,29 +2,79 @@ import type { MetadataRoute } from "next";
 
 import { siteUrl } from "@/lib/site";
 import { defaultSitemapContent } from "@/lib/sitemapDefaults";
-import type { SitemapSingletonDocument, SitemapContentPage } from "@/lib/sitemapDefaults";
+import type {
+  SitemapSingletonDocument,
+  SitemapContentPage,
+} from "@/lib/sitemapDefaults";
 
 export const dynamic = "force-static";
 
 type SitemapRouteDefinition = {
   path: string;
   documentType: string;
-  changeFrequency: NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>;
+  changeFrequency: NonNullable<
+    MetadataRoute.Sitemap[number]["changeFrequency"]
+  >;
   priority: number;
 };
 
 const fallbackLastModified = new Date("2026-06-02T00:00:00.000Z");
 
 const staticRouteDefinitions: SitemapRouteDefinition[] = [
-  { path: "/", documentType: "homePage", changeFrequency: "weekly", priority: 1 },
-  { path: "/tour", documentType: "tourPage", changeFrequency: "weekly", priority: 0.9 },
-  { path: "/blog", documentType: "blogPage", changeFrequency: "weekly", priority: 0.85 },
-  { path: "/docs", documentType: "docsPage", changeFrequency: "weekly", priority: 0.85 },
-  { path: "/signup", documentType: "signupPage", changeFrequency: "monthly", priority: 0.8 },
-  { path: "/compliance", documentType: "compliancePage", changeFrequency: "monthly", priority: 0.7 },
-  { path: "/privacy", documentType: "privacyPage", changeFrequency: "monthly", priority: 0.7 },
-  { path: "/terms", documentType: "termsPage", changeFrequency: "monthly", priority: 0.7 },
-  { path: "/cookies", documentType: "cookiesPage", changeFrequency: "monthly", priority: 0.6 },
+  {
+    path: "/",
+    documentType: "homePage",
+    changeFrequency: "weekly",
+    priority: 1,
+  },
+  {
+    path: "/tour",
+    documentType: "tourPage",
+    changeFrequency: "weekly",
+    priority: 0.9,
+  },
+  {
+    path: "/blog",
+    documentType: "blogPage",
+    changeFrequency: "weekly",
+    priority: 0.85,
+  },
+  {
+    path: "/docs",
+    documentType: "docsPage",
+    changeFrequency: "weekly",
+    priority: 0.85,
+  },
+  {
+    path: "/signup",
+    documentType: "signupPage",
+    changeFrequency: "monthly",
+    priority: 0.8,
+  },
+  {
+    path: "/compliance",
+    documentType: "compliancePage",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
+    path: "/privacy",
+    documentType: "privacyPage",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
+    path: "/terms",
+    documentType: "termsPage",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
+    path: "/cookies",
+    documentType: "cookiesPage",
+    changeFrequency: "monthly",
+    priority: 0.6,
+  },
 ];
 
 function toAbsoluteUrl(path: string): string {
@@ -44,7 +94,9 @@ function toLastModified(value?: string): Date {
 function buildContentRoute(
   basePath: "/blog" | "/docs",
   entry: { slug: string; lastModified?: string },
-  changeFrequency: NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>,
+  changeFrequency: NonNullable<
+    MetadataRoute.Sitemap[number]["changeFrequency"]
+  >,
   priority: number,
 ): MetadataRoute.Sitemap[number] {
   return {
@@ -59,17 +111,26 @@ function buildContentRoute(
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const content = defaultSitemapContent;
   const singletonLastModifiedByType = new Map(
-    content.singletonPages.map((page: SitemapSingletonDocument) => [page.documentType, page.lastModified]),
+    content.singletonPages.map((page: SitemapSingletonDocument) => [
+      page.documentType,
+      page.lastModified,
+    ]),
   );
 
   return [
     ...staticRouteDefinitions.map((route) => ({
       url: toAbsoluteUrl(route.path),
-      lastModified: toLastModified(singletonLastModifiedByType.get(route.documentType)),
+      lastModified: toLastModified(
+        singletonLastModifiedByType.get(route.documentType),
+      ),
       changeFrequency: route.changeFrequency,
       priority: route.priority,
     })),
-    ...content.blogPages.map((entry: SitemapContentPage) => buildContentRoute("/blog", entry, "weekly", 0.7)),
-    ...content.docsPages.map((entry: SitemapContentPage) => buildContentRoute("/docs", entry, "monthly", 0.65)),
+    ...content.blogPages.map((entry: SitemapContentPage) =>
+      buildContentRoute("/blog", entry, "weekly", 0.7),
+    ),
+    ...content.docsPages.map((entry: SitemapContentPage) =>
+      buildContentRoute("/docs", entry, "monthly", 0.65),
+    ),
   ];
 }

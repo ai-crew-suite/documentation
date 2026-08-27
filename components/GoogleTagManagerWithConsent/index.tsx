@@ -16,7 +16,9 @@ type GoogleTagManagerWithConsentProps = {
 /**
  * Loads Google Tag Manager only after marketing consent has been granted.
  */
-export function GoogleTagManagerWithConsent({ gtmId }: GoogleTagManagerWithConsentProps) {
+export function GoogleTagManagerWithConsent({
+  gtmId,
+}: GoogleTagManagerWithConsentProps) {
   const hasLoadedRef = useRef(false);
   const [shouldRender, setShouldRender] = useState(false);
 
@@ -40,10 +42,16 @@ export function GoogleTagManagerWithConsent({ gtmId }: GoogleTagManagerWithConse
       syncConsent(consentEvent.detail?.marketing ?? null);
     };
 
-    window.addEventListener(MARKETING_CONSENT_CHANGED_EVENT, handleConsentChanged);
+    window.addEventListener(
+      MARKETING_CONSENT_CHANGED_EVENT,
+      handleConsentChanged,
+    );
 
     return () => {
-      window.removeEventListener(MARKETING_CONSENT_CHANGED_EVENT, handleConsentChanged);
+      window.removeEventListener(
+        MARKETING_CONSENT_CHANGED_EVENT,
+        handleConsentChanged,
+      );
     };
   }, [gtmId]);
 

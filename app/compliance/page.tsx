@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BadgeCheck, LockKeyhole, ServerCrash, ShieldCheck } from "lucide-react";
+import {
+  BadgeCheck,
+  LockKeyhole,
+  ServerCrash,
+  ShieldCheck,
+} from "lucide-react";
 
 import { PageSection } from "@/components/Section";
 import { defaultCompliancePageContent } from "@/lib/complianceDefaults";
@@ -36,9 +41,7 @@ export default function CompliancePage() {
               {content.hero.description}
             </p>
 
-            <p className="text-base leading-7 italic">
-              {content.hero.note}
-            </p>
+            <p className="text-base leading-7 italic">{content.hero.note}</p>
           </div>
 
           <div className="rounded-4xl border border-trim-offset bg-page-base p-6 shadow-card backdrop-blur-[18px]">
@@ -47,7 +50,10 @@ export default function CompliancePage() {
             </p>
             <div className="mt-5 space-y-4">
               {content.hero.checklistItems.map((item) => (
-                <div key={item.text} className="flex justify-center rounded-3xl border border-trim-offset bg-page-offset p-4">
+                <div
+                  key={item.text}
+                  className="flex justify-center rounded-3xl border border-trim-offset bg-page-offset p-4"
+                >
                   <p className="text-base font-semibold tracking-tight text-content-active">
                     {item.text}
                   </p>
@@ -58,7 +64,10 @@ export default function CompliancePage() {
         </div>
       </PageSection>
 
-      <PageSection id="compliance-highlights" classes="px-6 py-8 sm:px-8 sm:py-10">
+      <PageSection
+        id="compliance-highlights"
+        classes="px-6 py-8 sm:px-8 sm:py-10"
+      >
         <div className="max-w-3xl">
           <p className="text-xs font-semibold uppercase tracking-widest text-content-offset">
             {content.highlightsSection.eyebrow}
@@ -97,7 +106,10 @@ export default function CompliancePage() {
         </div>
       </PageSection>
 
-      <PageSection id="compliance-frameworks" classes="px-6 py-8 sm:px-8 sm:py-10">
+      <PageSection
+        id="compliance-frameworks"
+        classes="px-6 py-8 sm:px-8 sm:py-10"
+      >
         <div>
           <p className="text-xs font-semibold uppercase tracking-widest text-content-offset">
             {content.frameworksSection.eyebrow}
@@ -124,7 +136,9 @@ export default function CompliancePage() {
                   {framework.status}
                 </p>
               </div>
-              <p className="mt-4 text-sm leading-6 text-content-offset">{framework.detail}</p>
+              <p className="mt-4 text-sm leading-6 text-content-offset">
+                {framework.detail}
+              </p>
             </article>
           ))}
         </div>

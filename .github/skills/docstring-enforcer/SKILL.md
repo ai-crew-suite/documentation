@@ -5,7 +5,7 @@ description: "Use when adding or revising documentation for Python modules/Djang
 
 # Docstring Enforcer Skill
 
-Use this skill for meaningful documentation that explains *why* code exists and *how* it handles edge cases.
+Use this skill for meaningful documentation that explains _why_ code exists and _how_ it handles edge cases.
 
 ## Rules
 
@@ -20,8 +20,8 @@ Use this skill for meaningful documentation that explains *why* code exists and 
 
 - **Standard:** Use JSDoc for exported utilities, hooks, and complex components.
 - **Frontend `lib/` Policy:** ALL shared utilities in `lib/` must include:
-    - **@example:** A brief code snippet showing typical usage.
-    - **Edge Cases:** Describe behavior for `null`, `undefined`, or empty strings in `@param` or `@returns`.
+  - **@example:** A brief code snippet showing typical usage.
+  - **Edge Cases:** Describe behavior for `null`, `undefined`, or empty strings in `@param` or `@returns`.
 - **Clarity:** Do not just restate TypeScript types. Explain constraints (e.g., "The string must be a valid ISO-8601 date").
 
 ## References

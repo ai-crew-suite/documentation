@@ -19,9 +19,11 @@ vi.mock("@sentry/nextjs", () => sentryMocks);
 
 describe("instrumentation-client", () => {
   beforeEach(() => {
-    logRocketMocks.getSessionURL.mockImplementation((callback: (url: string) => void) => {
-      callback("https://app.logrocket.com/session/test");
-    });
+    logRocketMocks.getSessionURL.mockImplementation(
+      (callback: (url: string) => void) => {
+        callback("https://app.logrocket.com/session/test");
+      },
+    );
   });
 
   afterEach(() => {

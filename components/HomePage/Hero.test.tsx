@@ -19,9 +19,18 @@ const heroPropsWithCta: IHeroProps = {
 };
 
 vi.mock("next/image", () => ({
-  default: ({ alt, className, src }: { alt: string; className?: string; src: string }) =>
+  default: ({
+    alt,
+    className,
+    src,
+  }: {
+    alt: string;
+    className?: string;
+    src: string;
+  }) => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img alt={alt} className={className} src={src} />,
+    <img alt={alt} className={className} src={src} />
+  ),
 }));
 
 afterEach(() => {
@@ -40,7 +49,10 @@ describe("Hero", () => {
 
     expect(heading).toBeInTheDocument();
     expect(image).toBeInTheDocument();
-    expect(ctaLink).toHaveAttribute("href", heroPropsWithCta.btnGetStarted?.link ?? "/signup");
+    expect(ctaLink).toHaveAttribute(
+      "href",
+      heroPropsWithCta.btnGetStarted?.link ?? "/signup",
+    );
     expect(ctaContainer).toHaveClass("justify-center", "md:justify-start");
     expect(imageContainer).toHaveClass("hidden", "md:block");
   });

@@ -26,7 +26,9 @@ export default function TermsPage() {
             {content.hero.description}
           </p>
 
-          <p className="text-sm text-content-offset">{content.hero.effectiveDate}</p>
+          <p className="text-sm text-content-offset">
+            {content.hero.effectiveDate}
+          </p>
         </div>
       </PageSection>
 
@@ -40,7 +42,9 @@ export default function TermsPage() {
               <span className="mt-2 sm:mt-0 text-3xl font-semibold tracking-tight text-trim-offset">
                 0{index + 1}
               </span>
-              <p className="text-base font-semibold tracking-tight text-content-active">{item.text}</p>
+              <p className="text-base font-semibold tracking-tight text-content-active">
+                {item.text}
+              </p>
             </div>
           ))}
         </div>
@@ -72,7 +76,9 @@ export default function TermsPage() {
               >
                 {section.title}
               </h3>
-              <p className="mt-3 text-base leading-7 text-content-offset">{section.body}</p>
+              <p className="mt-3 text-base leading-7 text-content-offset">
+                {section.body}
+              </p>
             </section>
           ))}
         </div>

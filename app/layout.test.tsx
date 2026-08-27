@@ -2,9 +2,21 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("next/image", () => ({
-  default: ({ alt, className, src }: { alt: string; className?: string; src: string | { src: string } }) => (
+  default: ({
+    alt,
+    className,
+    src,
+  }: {
+    alt: string;
+    className?: string;
+    src: string | { src: string };
+  }) => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img alt={alt} className={className} src={typeof src === "string" ? src : src.src} />
+    <img
+      alt={alt}
+      className={className}
+      src={typeof src === "string" ? src : src.src}
+    />
   ),
 }));
 
@@ -66,7 +78,8 @@ describe("Root layout", () => {
 
     await expect(generateMetadata()).resolves.toMatchObject({
       title: "AI Crew Suite",
-      description: "AI-powered workflow automation for Backstage developer portals",
+      description:
+        "AI-powered workflow automation for Backstage developer portals",
     });
   });
 
@@ -76,7 +89,9 @@ describe("Root layout", () => {
       await RootLayout({ children: <div>Child content</div> }),
     );
 
-    expect(markup).toContain("AI-powered workflow automation for Backstage developer portals");
+    expect(markup).toContain(
+      "AI-powered workflow automation for Backstage developer portals",
+    );
     expect(markup).toContain("Footer description");
   });
 });

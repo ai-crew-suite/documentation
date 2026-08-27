@@ -14,11 +14,13 @@ This guide covers Docker Compose (development/testing) and Kubernetes (productio
 ## Deployment Options
 
 ### 1. **Docker Compose** (Development/Testing)
+
 - Single-node deployment
 - All dependencies included
 - Perfect for evaluation and development
 
 ### 2. **Kubernetes Helm Charts** (Production)
+
 - Multi-node, high availability
 - Resource limits and requests
 - Integrated with existing K8s tooling
@@ -26,23 +28,27 @@ This guide covers Docker Compose (development/testing) and Kubernetes (productio
 ## Docker Compose Deployment
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/webstackbuilders/ai-crew-suite.git
 cd ai-crew-suite
 ```
 
 ### 2. Configure Environment
+
 ```bash
 cp .env.example .env
 # Edit .env with your Backstage URL and database credentials
 ```
 
 ### 3. Start Services
+
 ```bash
 docker compose up -d
 ```
 
 This starts:
+
 - **PostgreSQL** - Backstage database
 - **Redis** - Plugin memory store
 - **Backstage** with AI Crew Suite plugins pre-installed
@@ -51,17 +57,20 @@ This starts:
 ## Kubernetes Deployment (Production)
 
 ### 1. Add the Helm Repository
+
 ```bash
 helm repo add ai-crew-suite https://webstackbuilders.github.io/ai-crew-suite-helm
 helm repo update
 ```
 
 ### 2. Create Namespace
+
 ```bash
 kubectl create namespace ai-crew-suite
 ```
 
 ### 3. Install Dependencies
+
 ```bash
 # Install PostgreSQL (if not using external)
 helm install postgres oci://registry-1.docker.io/bitnamicharts/postgresql \
@@ -77,6 +86,7 @@ helm install redis oci://registry-1.docker.io/bitnamicharts/redis \
 ```
 
 ### 4. Install AI Crew Suite
+
 ```bash
 helm install ai-crew-suite ai-crew-suite/ai-crew-suite \
   --namespace ai-crew-suite \
@@ -84,6 +94,7 @@ helm install ai-crew-suite ai-crew-suite/ai-crew-suite \
 ```
 
 ### Example values-production.yaml
+
 ```yaml
 backstage:
   enabled: true
@@ -103,6 +114,7 @@ backstage:
 ## Configuration
 
 ### Plugin Configuration
+
 Each plugin can be configured via environment variables or a config map:
 
 ```yaml
@@ -115,22 +127,26 @@ metadata:
 data:
   PLUGIN_KUBERNETES_AI_RESPONDER_ENABLED: "true"
   PLUGIN_KUBERNETES_AI_RESPONDER_MAX_TOOL_INVOCATIONS: "10"
-  PLUGIN_ALERT_FATIGUE_TUNER_SCHEDULE: "0 2 * * 0"  # Sundays at 2 AM
+  PLUGIN_ALERT_FATIGUE_TUNER_SCHEDULE: "0 2 * * 0" # Sundays at 2 AM
 ```
 
 ## Monitoring and Observability
 
 ### 1. Prometheus Metrics
+
 All plugins expose Prometheus metrics at `/metrics`:
+
 - `ai_crew_suite_plugin_invocations_total`
 - `ai_crew_suite_tool_executions_total`
 - `ai_crew_suite_evidence_collected_bytes`
 - `ai_crew_suite_llm_tokens_used`
 
 ### 2. Logging
+
 Structured JSON logging with correlation IDs.
 
 ### 3. Tracing
+
 Distributed tracing with OpenTelemetry.
 
 ## Troubleshooting
@@ -138,12 +154,14 @@ Distributed tracing with OpenTelemetry.
 ### Common Issues
 
 #### 1. Plugin Not Appearing in Backstage
+
 ```bash
 # Check plugin registration
 kubectl logs deployment/backstage -n ai-crew-suite | grep "plugin.*registered"
 ```
 
 #### 2. Memory Issues
+
 ```bash
 # Check Redis connection
 kubectl exec deployment/backstage -n ai-crew-suite -- redis-cli -h redis ping

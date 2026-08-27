@@ -44,14 +44,14 @@ The graph runs as a custom `WorkflowRunner` at ID `alert-tuning`, executing a fi
 
 All agentic dependencies are delivered through existing shared modules. The Alert Fatigue Tuner itself introduces **no new infrastructure**:
 
-| Capability | Module | State |
-|---|---|---|
-| LLM routing & model registry | `plugin-ai-core-backend-module-llm-openai` or `llm-openrouter` | Required; `ai.agents.alertAiTuner.model` references a registered model ID |
-| Incident alert history | `plugin-ai-core-backend-module-incident-management` — `IncidentManagementDriver.getAlertHistory()` | Required for the `incident.alert.history` and `incident.incident.list` tool calls |
-| Observability metrics | `plugin-ai-core-backend-module-observability` (Datadog driver) — `observability.metrics.query` | Optional; absent driver degrades to `confidence: 'low'` |
-| VCS repository read | `plugin-ai-core-backend-module-vcs` — `vcs.repository.read_file`, `vcs.repository.search`, `vcs.repository.get_metadata` | Required for IaC anchor discovery |
-| RAG / knowledge retrieval | `plugin-ai-core-backend-module-retrieval-augmenter` | Optional; provides alerting-standards context for justification prose only |
-| Runtime store | `plugin-ai-core-backend-module-runtime-store` | Required for checkpoint/artifact persistence |
+| Capability                   | Module                                                                                                                   | State                                                                             |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| LLM routing & model registry | `plugin-ai-core-backend-module-llm-openai` or `llm-openrouter`                                                           | Required; `ai.agents.alertAiTuner.model` references a registered model ID         |
+| Incident alert history       | `plugin-ai-core-backend-module-incident-management` — `IncidentManagementDriver.getAlertHistory()`                       | Required for the `incident.alert.history` and `incident.incident.list` tool calls |
+| Observability metrics        | `plugin-ai-core-backend-module-observability` (Datadog driver) — `observability.metrics.query`                           | Optional; absent driver degrades to `confidence: 'low'`                           |
+| VCS repository read          | `plugin-ai-core-backend-module-vcs` — `vcs.repository.read_file`, `vcs.repository.search`, `vcs.repository.get_metadata` | Required for IaC anchor discovery                                                 |
+| RAG / knowledge retrieval    | `plugin-ai-core-backend-module-retrieval-augmenter`                                                                      | Optional; provides alerting-standards context for justification prose only        |
+| Runtime store                | `plugin-ai-core-backend-module-runtime-store`                                                                            | Required for checkpoint/artifact persistence                                      |
 
 ### Known Contract Limitation — VCS Write Tool Not Yet Available
 
@@ -80,7 +80,7 @@ In `packages/backend/package.json`:
 In `packages/backend/src/index.ts`, add alongside the other `@webstackbuilders` module loads:
 
 ```ts
-import { alertAiTunerModule } from '@webstackbuilders/plugin-ai-agent-backend-alert-ai-tuner';
+import { alertAiTunerModule } from "@webstackbuilders/plugin-ai-agent-backend-alert-ai-tuner";
 
 // Inside your backend builder:
 backend.add(alertAiTunerModule);
@@ -94,7 +94,7 @@ The module **throws at boot** if `ai.agents.alertAiTuner.model` is missing. Add 
 ai:
   agents:
     alertAiTuner:
-      model: alert-ai-tuner          # Registered model ID — required
+      model: alert-ai-tuner # Registered model ID — required
 ```
 
 See [Configuration Reference](#configuration-reference) for the full schema and all defaults.
@@ -125,7 +125,7 @@ In `packages/app/src/App.tsx`, import the new-frontend-system alpha entry and ex
 
 ```ts
 // Import from the plugin's alpha entry point (new frontend system):
-import alertAiTunerExtension from '@webstackbuilders/plugin-ai-agent-frontend-alert-ai-tuner/alpha';
+import alertAiTunerExtension from "@webstackbuilders/plugin-ai-agent-frontend-alert-ai-tuner/alpha";
 
 // Add to your feature flags / extensions array:
 const app = createApp({
@@ -157,37 +157,37 @@ ai:
 
       # --- optional, with defaults ---
 
-      windowDays: 14               # Default trailing analysis window (days)
-      maxWindowDays: 30            # Hard clamp on any requested window
-      maxHistoryEntries: 500       # Clamp on incident.alert.history result limit
-      maxToolInvocations: 16       # Shared read-tool budget per evaluation
-      maxFileCharacters: 40000     # Character cap on IaC file content
+      windowDays: 14 # Default trailing analysis window (days)
+      maxWindowDays: 30 # Hard clamp on any requested window
+      maxHistoryEntries: 500 # Clamp on incident.alert.history result limit
+      maxToolInvocations: 16 # Shared read-tool budget per evaluation
+      maxFileCharacters: 40000 # Character cap on IaC file content
 
       # Statistical decision boundaries
       noise:
-        minSamples: 8              # Below this -> insufficient_evidence
-        autoResolveRatio: 0.8      # Minimum auto-resolve share for noisy verdict
-        selfClearSeconds: 300      # Maximum median self-clear (s) for noisy
-        maxPagedRatio: 0.2         # Paged share above this -> inconclusive
-        correlationWindowMinutes: 15   # Incident/deploy overlap padding
+        minSamples: 8 # Below this -> insufficient_evidence
+        autoResolveRatio: 0.8 # Minimum auto-resolve share for noisy verdict
+        selfClearSeconds: 300 # Maximum median self-clear (s) for noisy
+        maxPagedRatio: 0.2 # Paged share above this -> inconclusive
+        correlationWindowMinutes: 15 # Incident/deploy overlap padding
 
       # Safety caps for the deterministic patch engine
       patch:
-        maxThresholdIncreasePct: 15    # Hard cap on threshold increase
-        maxDurationMultiplier: 3       # e.g. "2m" -> max "6m"
-        peakHeadroomPct: 10            # Headroom above observed metric peak
-        iacPaths:                      # Searched when no explicit path supplied
+        maxThresholdIncreasePct: 15 # Hard cap on threshold increase
+        maxDurationMultiplier: 3 # e.g. "2m" -> max "6m"
+        peakHeadroomPct: 10 # Headroom above observed metric peak
+        iacPaths: # Searched when no explicit path supplied
           - alerts.tf
           - prometheus-rules.yaml
           - monitoring/**
 
       # Background weekly noise sweep (disabled by default)
       sweep:
-        enabled: false             # Kill switch — sweep runs are proposal-only
-        cron: '0 6 * * 1'         # Default: Monday 06:00 UTC
-        maxSweepAlerts: 25         # Per-sweep dispatch cap
-        cooldownDays: 30           # Re-proposal cooldown per alert+patchHash
-        services: []               # Services evaluated when sweep fires
+        enabled: false # Kill switch — sweep runs are proposal-only
+        cron: "0 6 * * 1" # Default: Monday 06:00 UTC
+        maxSweepAlerts: 25 # Per-sweep dispatch cap
+        cooldownDays: 30 # Re-proposal cooldown per alert+patchHash
+        services: [] # Services evaluated when sweep fires
 
       # Future PR publishing (ineffective without VCS write tool)
       publish:
@@ -240,14 +240,14 @@ An evaluation is triggered by `POST agents/alert-ai-tuner/runs` with an `AlertTu
 ```ts
 type AlertTuningRequest = {
   version: 1;
-  source: 'manual' | 'scheduler';
-  alertId?: string;        // e.g. 'cpu-utilization-high'
-  service?: string;        // e.g. 'checkout-api'
-  entityRef?: string;      // Future catalog-entity-based resolution
-  windowDays?: number;     // Overrides the default 14
-  repoUrl?: string;        // Required until CatalogEntityResolver lands
-  iacPath?: string;        // Overrides patch.iaciPaths search
-  publish?: boolean;       // Request write path; ineffective without VCS write tool
+  source: "manual" | "scheduler";
+  alertId?: string; // e.g. 'cpu-utilization-high'
+  service?: string; // e.g. 'checkout-api'
+  entityRef?: string; // Future catalog-entity-based resolution
+  windowDays?: number; // Overrides the default 14
+  repoUrl?: string; // Required until CatalogEntityResolver lands
+  iacPath?: string; // Overrides patch.iaciPaths search
+  publish?: boolean; // Request write path; ineffective without VCS write tool
 };
 ```
 
@@ -257,12 +257,12 @@ At minimum, one of `alertId` or `service` must be supplied. The `repoUrl` is cur
 
 The graph emits four step transitions, with early termination gates between stages:
 
-| Step | Source | Behaviour and termination |
-|---|---|---|
-| **observe** | `history.ts` | Reads alert firing history via `incident.alert.history`; derives durations from trigger/resolve timestamps; window-clamps and deduplicates newest-first. **Evidence floor check**: if the resulting sample count is below `noise.minSamples`, the run emits `insufficient_evidence` immediately — before any model call or repository read. |
-| **analyze** | `noise.ts` | Computes the deterministic `NoiseScore` from normalized `FiringSample[]` using nearest-rank percentiles (median, p90). The model is never consulted here; the verdict is fixed in pure arithmetic. |
-| **correlate** | `correlate.ts` | Reads real incidents via `incident.incident.list`, normalizes them into padded `SuppressionWindow[]`, and tests each firing for interval overlap. Any overlap forces `verdict: 'real_signal'` — a terminal outcome that removes the patch path entirely. Entries with `resolution: 'unresolved'` participate in correlation but not in duration statistics. |
-| **locate** | `pipeline.ts` (orchestrating `locate.ts` + `patch.ts` + `proposal.ts`) | Resolves the owning IaC file via `vcs.repository.search` / `vcs.repository.read_file`, discovers the exact `ThresholdAnchor` with line numbers (HCL `resource` blocks and Prometheus `- alert:` entries), optionally reads metric headroom via `observability.metrics.query`, derives capped threshold/duration changes via `patch.ts`, validates the anchored unified diff against the source file, and assembles the final `AlertTuningProposal` artifact. |
+| Step          | Source                                                                 | Behaviour and termination                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **observe**   | `history.ts`                                                           | Reads alert firing history via `incident.alert.history`; derives durations from trigger/resolve timestamps; window-clamps and deduplicates newest-first. **Evidence floor check**: if the resulting sample count is below `noise.minSamples`, the run emits `insufficient_evidence` immediately — before any model call or repository read.                                                                                                                  |
+| **analyze**   | `noise.ts`                                                             | Computes the deterministic `NoiseScore` from normalized `FiringSample[]` using nearest-rank percentiles (median, p90). The model is never consulted here; the verdict is fixed in pure arithmetic.                                                                                                                                                                                                                                                           |
+| **correlate** | `correlate.ts`                                                         | Reads real incidents via `incident.incident.list`, normalizes them into padded `SuppressionWindow[]`, and tests each firing for interval overlap. Any overlap forces `verdict: 'real_signal'` — a terminal outcome that removes the patch path entirely. Entries with `resolution: 'unresolved'` participate in correlation but not in duration statistics.                                                                                                  |
+| **locate**    | `pipeline.ts` (orchestrating `locate.ts` + `patch.ts` + `proposal.ts`) | Resolves the owning IaC file via `vcs.repository.search` / `vcs.repository.read_file`, discovers the exact `ThresholdAnchor` with line numbers (HCL `resource` blocks and Prometheus `- alert:` entries), optionally reads metric headroom via `observability.metrics.query`, derives capped threshold/duration changes via `patch.ts`, validates the anchored unified diff against the source file, and assembles the final `AlertTuningProposal` artifact. |
 
 The graph is **proposal-only**: there is no `resume()` method, no gate step, and no publish path. The run terminates at `done` after the proposal artifact is emitted. The approval gate and pull-request publish will be added once the shared `vcs.pull_request.create` write tool lands in `VcsDriver`.
 
@@ -276,18 +276,18 @@ type FiringSample = {
   triggeredAt: string;
   resolvedAt?: string;
   durationSeconds?: number;
-  resolution: 'auto' | 'manual' | 'unresolved';
+  resolution: "auto" | "manual" | "unresolved";
   paged: boolean;
 };
 
 type NoiseScore = {
   samples: number;
-  autoResolveRatio: number;         // 0..1
-  medianSelfClearSeconds: number;   // Drives the verdict
-  p90SelfClearSeconds: number;      // Feeds the safety cap
-  pagedRatio: number;               // Above maxPagedRatio -> inconclusive
-  verdict: 'noisy' | 'real_signal' | 'inconclusive';
-  suppressedBy?: string[];          // inc-N / deploy evidence IDs
+  autoResolveRatio: number; // 0..1
+  medianSelfClearSeconds: number; // Drives the verdict
+  p90SelfClearSeconds: number; // Feeds the safety cap
+  pagedRatio: number; // Above maxPagedRatio -> inconclusive
+  verdict: "noisy" | "real_signal" | "inconclusive";
+  suppressedBy?: string[]; // inc-N / deploy evidence IDs
 };
 ```
 
@@ -331,7 +331,7 @@ This posture is enforced at two levels:
 1. The tool allow-list is **read-only** — see `ALERT_AI_TUNER_TOOL_IDS` in `agent.ts`
 2. `proposal.ts` **re-validates** the model's output: if the model restates different numbers than those supplied, the proposal degrades to a fact-only proposal with the original numbers and records the discrepancy as a limitation
 
-The optional `knowledge.retrieve` tool pulls alerting-standards/runbook context into the PR body **only** so reviewers see *why* the threshold policy allows the change. It must never influence `NoiseScore`, the verdict, or any numeric value in `ThresholdChange`.
+The optional `knowledge.retrieve` tool pulls alerting-standards/runbook context into the PR body **only** so reviewers see _why_ the threshold policy allows the change. It must never influence `NoiseScore`, the verdict, or any numeric value in `ThresholdChange`.
 
 ## User Guide & Interface Walkthrough
 
@@ -427,6 +427,7 @@ The alert did not fire enough times in the configured window. The noise engine r
 **"anchor_not_found" on a legitimate alert definition**
 
 The IaC locator uses bounded pattern matching, not full YAML/HCL parsing. Verify:
+
 - The IaC file exists in the configured repository
 - The alert name in the file exactly matches the `alertId` supplied (case-sensitive)
 - The alert block is not nested in an unexpected structure (e.g., inside a `for_each` or `locals` block that shifts indentation)
@@ -441,6 +442,7 @@ The correlator found an overlapping real incident or deployment. Check the propo
 **LLM rate limits / context window overruns**
 
 The system prompt is compact and the model is only invoked for justification prose (after all arithmetic is complete). If rate limits occur:
+
 - Reduce `maxToolInvocations` to cap the read-tool budget per evaluation
 - Increase `maxHistoryEntries` clamping if the model is receiving too much firing history context
 - The model's output is re-validated by `proposal.ts` — if the model fails, the existing numbers are used in a fact-only proposal

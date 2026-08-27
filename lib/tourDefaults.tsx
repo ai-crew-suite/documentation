@@ -8,7 +8,8 @@ export const defaultTourPageContent: TourPageContent = {
   },
   hero: {
     eyebrow: "Product tour",
-    title: "See how AI Crew Suite transforms Backstage with intelligent developer experiences.",
+    title:
+      "See how AI Crew Suite transforms Backstage with intelligent developer experiences.",
     description:
       "This is the fast walk-through: AI agents integrate with Backstage, enhance developer workflows, provide intelligent insights, and automate routine tasks—all while keeping your existing plugins and data.",
     primaryAction: {
@@ -98,7 +99,8 @@ export const defaultTourPageContent: TourPageContent = {
   },
   ctaSection: {
     eyebrow: "Start your first project",
-    title: "Turn your Backstage instance into an intelligent developer platform.",
+    title:
+      "Turn your Backstage instance into an intelligent developer platform.",
     description:
       "Add AI Crew Suite plugins, configure your first AI agent, and see how intelligent automation can elevate your team’s productivity within a week.",
     badges: ["Backstage‑native", "Open‑source", "Extensible"],

@@ -3,7 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Newspaper } from "lucide-react";
 import { PageSection } from "@/components/Section";
-import { defaultBlogPageContent, getBlogContentPages } from "@/lib/blogDefaults";
+import {
+  defaultBlogPageContent,
+  getBlogContentPages,
+} from "@/lib/blogDefaults";
 import type { BlogContentPage } from "@/lib/blogTypes";
 
 type BlogCard = {
@@ -24,14 +27,17 @@ export function generateMetadata(): Metadata {
 async function buildBlogCards(): Promise<BlogCard[]> {
   const blogPages = await getBlogContentPages();
   return blogPages.map<BlogCard>((item: BlogContentPage) => {
-    const previewImage = typeof item.previewImage === 'string' 
-      ? item.previewImage 
-      : item.previewImage.src;
+    const previewImage =
+      typeof item.previewImage === "string"
+        ? item.previewImage
+        : item.previewImage.src;
 
     return {
       href: `/blog/${item.slug.current}`,
       title: item.title,
-      description: item.description ?? defaultBlogPageContent.postsSection.fallbackDescription,
+      description:
+        item.description ??
+        defaultBlogPageContent.postsSection.fallbackDescription,
       previewImage,
       publishedAt: item.publishedAt,
     };
@@ -43,9 +49,7 @@ export default async function BlogHomePage() {
 
   return (
     <main className="relative mx-auto flex w-full flex-col gap-8 pb-16 pt-24">
-      <PageSection
-        classes="px-6 py-10 sm:px-10 sm:py-12"
-      >
+      <PageSection classes="px-6 py-10 sm:px-10 sm:py-12">
         <div className="space-y-5">
           <span className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-2 font-medium text-content-inverse">
             <Newspaper className="h-4 w-4" aria-hidden="true" />
@@ -79,15 +83,24 @@ export default async function BlogHomePage() {
               </div>
               <div className="flex flex-1 flex-col gap-4 px-6 py-6">
                 {post.publishedAt ? (
-                  <p className="text-sm font-medium text-content-offset">{post.publishedAt}</p>
+                  <p className="text-sm font-medium text-content-offset">
+                    {post.publishedAt}
+                  </p>
                 ) : null}
                 <div className="space-y-3">
-                  <h2 className="text-2xl font-semibold tracking-tight text-secondary">{post.title}</h2>
-                  <p className="text-base leading-7 text-content-active">{post.description}</p>
+                  <h2 className="text-2xl font-semibold tracking-tight text-secondary">
+                    {post.title}
+                  </h2>
+                  <p className="text-base leading-7 text-content-active">
+                    {post.description}
+                  </p>
                 </div>
                 <div className="mt-auto flex items-center gap-2 text-sm font-semibold text-secondary">
                   Read article
-                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
+                    aria-hidden="true"
+                  />
                 </div>
               </div>
             </article>

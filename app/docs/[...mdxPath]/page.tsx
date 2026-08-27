@@ -1,3 +1,4 @@
+import type { ComponentProps } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { cache } from "react";
@@ -7,14 +8,54 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import { PageSection } from "@/components/Section";
-import { getAllDocsPages, getDocsPage, getDocsPageList, getDocsSectionOrder, getDocsSectionTitles } from "@/lib/docsUtils";
-import type { DocsPageContent, DocsSidebarItem, DocsSidebarSection } from "@/lib/docsTypes";
+import {
+  getAllDocsPages,
+  getDocsPage,
+} from "@/lib/docsUtils";
+import type {
+  DocsPageContent,
+} from "@/lib/docsTypes";
 
 import {
   DocsPageSidebar,
   type DocsSidebarItem as SidebarItem,
   type DocsSidebarSection as SidebarSection,
 } from "./_components/DocsPageSidebar";
+
+// ReactMarkdown node type - we don't know the exact type, so we use unknown
+type ReactMarkdownNode = unknown;
+
+// Helper type for React element with props
+interface ReactElementWithProps {
+  props: {
+    children?: ReactMarkdownChildren;
+  };
+}
+
+// Type guard to check if value is a React element with props
+function isReactElementWithProps(value: unknown): value is ReactElementWithProps {
+  return typeof value === 'object' && value !== null && 'props' in value;
+}
+
+interface HeadingProps extends ComponentProps<'h1'> {
+  node: ReactMarkdownNode;
+  children: React.ReactNode;
+}
+
+interface LinkProps extends ComponentProps<'a'> {
+  node: ReactMarkdownNode;
+  href?: string;
+  children: React.ReactNode;
+}
+
+interface CodeProps extends ComponentProps<'code'> {
+  node: ReactMarkdownNode;
+  inline?: boolean;
+  className?: string;
+  children: React.ReactNode;
+}
+
+type ReactMarkdownChildren = string | React.ReactNode | React.ReactNode[];
 
 type DocsRouteParams = {
   mdxPath: string[];
@@ -25,14 +66,13 @@ type DocsMetadata = Metadata & {
   description?: string;
 };
 
-
-
 const docsBasePath = "/docs";
 const getDocsPagesIndex = cache(async () => await getAllDocsPages());
 
-
-
-function buildDocsMetadata(metadata: DocsMetadata, fallbackDescription: string): Metadata {
+function buildDocsMetadata(
+  metadata: DocsMetadata,
+  fallbackDescription: string,
+): Metadata {
   const title = metadata.title ?? "Documentation";
   const description = metadata.description ?? fallbackDescription;
 
@@ -53,8 +93,6 @@ function buildDocsMetadata(metadata: DocsMetadata, fallbackDescription: string):
   };
 }
 
-
-
 function slugifyHeading(value: string): string {
   return value
     .toLowerCase()
@@ -63,15 +101,24 @@ function slugifyHeading(value: string): string {
     .replace(/\s+/g, "-");
 }
 
-
-
 function resolveDocsHref(currentSlug: string, href: string): string {
-  if (!href || href.startsWith("#") || href.startsWith("http://") || href.startsWith("https://") || href.startsWith("mailto:") || href.startsWith("tel:")) {
+  if (
+    !href ||
+    href.startsWith("#") ||
+    href.startsWith("http://") ||
+    href.startsWith("https://") ||
+    href.startsWith("mailto:") ||
+    href.startsWith("tel:")
+  ) {
     return href;
   }
 
   if (href.startsWith("/")) {
-    return href.endsWith(".md") ? href.slice(0, -3) : href.endsWith(".mdx") ? href.slice(0, -4) : href;
+    return href.endsWith(".md")
+      ? href.slice(0, -3)
+      : href.endsWith(".mdx")
+        ? href.slice(0, -4)
+        : href;
   }
 
   const [rawPath, hash = ""] = href.split("#");
@@ -81,60 +128,99 @@ function resolveDocsHref(currentSlug: string, href: string): string {
 
   return hash ? `${docsPath}#${hash}` : docsPath;
 }
-function childrenToString(children: any): string {
+function childrenToString(children: ReactMarkdownChildren): string {
   if (typeof children === "string") return children;
+  if (typeof children === "number") return children.toString();
   if (Array.isArray(children)) return children.map(childrenToString).join("");
-  if (children?.props?.children) return childrenToString(children.props.children);
+  if (isReactElementWithProps(children)) {
+    return childrenToString(children.props.children);
+  }
   return "";
 }
 
 function createMarkdownComponents(currentSlug: string) {
   return {
-    h1: ({ node, children, ...props }: any) => {
+    h1: ({ node: _node, children, ...props }: HeadingProps) => {
       const id = slugifyHeading(childrenToString(children));
-      return <h1 id={id} {...props}>{children}</h1>;
+      return (
+        <h1 id={id} {...props}>
+          {children}
+        </h1>
+      );
     },
-    h2: ({ node, children, ...props }: any) => {
+    h2: ({ node: _node, children, ...props }: HeadingProps) => {
       const id = slugifyHeading(childrenToString(children));
-      return <h2 id={id} {...props}>{children}</h2>;
+      return (
+        <h2 id={id} {...props}>
+          {children}
+        </h2>
+      );
     },
-    h3: ({ node, children, ...props }: any) => {
+    h3: ({ node: _node, children, ...props }: HeadingProps) => {
       const id = slugifyHeading(childrenToString(children));
-      return <h3 id={id} {...props}>{children}</h3>;
+      return (
+        <h3 id={id} {...props}>
+          {children}
+        </h3>
+      );
     },
-    h4: ({ node, children, ...props }: any) => {
+    h4: ({ node: _node, children, ...props }: HeadingProps) => {
       const id = slugifyHeading(childrenToString(children));
-      return <h4 id={id} {...props}>{children}</h4>;
+      return (
+        <h4 id={id} {...props}>
+          {children}
+        </h4>
+      );
     },
-    h5: ({ node, children, ...props }: any) => {
+    h5: ({ node: _node, children, ...props }: HeadingProps) => {
       const id = slugifyHeading(childrenToString(children));
-      return <h5 id={id} {...props}>{children}</h5>;
+      return (
+        <h5 id={id} {...props}>
+          {children}
+        </h5>
+      );
     },
-    h6: ({ node, children, ...props }: any) => {
+    h6: ({ node: _node, children, ...props }: HeadingProps) => {
       const id = slugifyHeading(childrenToString(children));
-      return <h6 id={id} {...props}>{children}</h6>;
+      return (
+        <h6 id={id} {...props}>
+          {children}
+        </h6>
+      );
     },
-    a: ({ node, href, children, ...props }: any) => {
+    a: ({ node: _node, href, children, ...props }: LinkProps) => {
       if (!href) {
         return <>{children}</>;
       }
       const resolvedHref = resolveDocsHref(currentSlug, href);
-      if (href.startsWith("http://") || href.startsWith("https://") || href.startsWith("mailto:") || href.startsWith("tel:")) {
+      if (
+        href.startsWith("http://") ||
+        href.startsWith("https://") ||
+        href.startsWith("mailto:") ||
+        href.startsWith("tel:")
+      ) {
         return (
           <a href={resolvedHref} rel="noreferrer" target="_blank" {...props}>
             {children}
           </a>
         );
       }
-      return <Link href={resolvedHref} {...props}>{children}</Link>;
+      return (
+        <Link href={resolvedHref} {...props}>
+          {children}
+        </Link>
+      );
     },
-    code: ({ node, inline, className, children, ...props }: any) => {
+    code: ({ node: _node, inline, className, children, ...props }: CodeProps) => {
       const language = className?.replace("language-", "");
       return inline ? (
         <code {...props}>{children}</code>
       ) : (
         <pre>
-          <code className={language ? `language-${language}` : undefined} {...props}>
+          <code
+            className={language ? `language-${language}` : undefined}
+            {...props}
+          >
             {children}
           </code>
         </pre>
@@ -142,10 +228,6 @@ function createMarkdownComponents(currentSlug: string) {
     },
   };
 }
-
-
-
-
 
 function buildSidebarSections(pages: DocsPageContent[]): SidebarSection[] {
   const sections: Record<string, SidebarItem[]> = {};
@@ -186,13 +268,18 @@ export async function generateMetadata(props: {
       title: "Documentation not found",
     };
   }
-  return buildDocsMetadata({
-    title: page.frontmatter.title,
-    description: page.frontmatter.description,
-  }, "AI Crew Suite documentation for agentic workflow plugins");
+  return buildDocsMetadata(
+    {
+      title: page.frontmatter.title,
+      description: page.frontmatter.description,
+    },
+    "AI Crew Suite documentation for agentic workflow plugins",
+  );
 }
 
-export default async function Page(props: { params: Promise<DocsRouteParams> }) {
+export default async function Page(props: {
+  params: Promise<DocsRouteParams>;
+}) {
   const params = await props.params;
   const slug = params.mdxPath.join("/");
   const [docsPage, pages] = await Promise.all([
@@ -206,7 +293,10 @@ export default async function Page(props: { params: Promise<DocsRouteParams> }) 
 
   const currentPath = `${docsBasePath}/${slug}`;
   const sidebarSections = buildSidebarSections(pages);
-  const serializedToc = docsPage.headings.filter((h: { depth: number; value: string; id: string }) => h.depth >= 2 && h.depth <= 6);
+  const serializedToc = docsPage.headings.filter(
+    (h: { depth: number; value: string; id: string }) =>
+      h.depth >= 2 && h.depth <= 6,
+  );
   const content = (
     <div className="markdown-content">
       <ReactMarkdown

@@ -1,3 +1,4 @@
+import type { StaticImageData } from "next/image";
 import featureImage01 from "@/assets/images/feature-01.jpg";
 import featureImage02 from "@/assets/images/feature-02.jpg";
 import featureImage03 from "@/assets/images/feature-03.jpg";
@@ -7,11 +8,13 @@ import { getBlogPageList } from "./blogUtils";
 export const defaultBlogPageContent: BlogPageContent = {
   metadata: {
     title: "AI Crew Suite Blog",
-    description: "Product notes, release write-ups, and technical articles from the AI Crew Suite team.",
+    description:
+      "Product notes, release write-ups, and technical articles from the AI Crew Suite team.",
   },
   hero: {
     badge: "Blog",
-    title: "Notes, experiments, and launch stories from the AI Crew Suite team.",
+    title:
+      "Notes, experiments, and launch stories from the AI Crew Suite team.",
     description:
       "This route stays visually independent from the docs area. Each post can bring its own imagery, voice, and long-form layout while the index page stays optimized for browsing.",
   },
@@ -21,7 +24,7 @@ export const defaultBlogPageContent: BlogPageContent = {
 };
 
 // Mapping from image keys to imported images
-export const blogImageMap: Record<string, any> = {
+export const blogImageMap: Record<string, StaticImageData> = {
   "feature-01": featureImage01,
   "feature-02": featureImage02,
   "feature-03": featureImage03,
@@ -35,7 +38,7 @@ export async function getBlogContentPages(): Promise<BlogContentPage[]> {
     return pages.map((page) => {
       const imageKey = page.previewImage || "feature-01";
       const previewImage = blogImageMap[imageKey] || featureImage01;
-      
+
       return {
         title: page.title,
         description: page.description,
@@ -48,7 +51,10 @@ export async function getBlogContentPages(): Promise<BlogContentPage[]> {
       };
     });
   } catch (error) {
-    console.error("Failed to load blog pages from markdown, using defaults:", error);
+    console.error(
+      "Failed to load blog pages from markdown, using defaults:",
+      error,
+    );
     return defaultBlogContentPages;
   }
 }
@@ -56,7 +62,8 @@ export async function getBlogContentPages(): Promise<BlogContentPage[]> {
 // Legacy default blog content (fallback if markdown files are missing)
 export const defaultBlogContentPages: BlogContentPage[] = [
   {
-    title: "Introducing AI Crew Suite: Eighteen agentic workflow plugins for Backstage",
+    title:
+      "Introducing AI Crew Suite: Eighteen agentic workflow plugins for Backstage",
     description:
       "A deep dive into the architecture and philosophy behind our monorepo of agentic workflow plugins for Spotify's Backstage IDP.",
     publishedAt: "August 27, 2026",
@@ -67,7 +74,8 @@ export const defaultBlogContentPages: BlogContentPage[] = [
     previewImage: featureImage01,
   },
   {
-    title: "Plugin-scoped automation: How AI Crew Suite maintains context across workflows",
+    title:
+      "Plugin-scoped automation: How AI Crew Suite maintains context across workflows",
     description:
       "Explore how each plugin maintains its own memory and context, enabling complex multi-step workflows without losing track of dependencies.",
     publishedAt: "August 20, 2026",

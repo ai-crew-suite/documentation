@@ -11,11 +11,18 @@ import type { IProblemsProps } from "@/lib/types";
 import Problems from "./Problems";
 
 vi.mock("next/image", () => ({
-  default: ({ alt, className, src }: { alt: string; className?: string; src: string }) =>
-    (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img alt={alt} className={className} height={300} src={src} width={300} />
-    ),
+  default: ({
+    alt,
+    className,
+    src,
+  }: {
+    alt: string;
+    className?: string;
+    src: string;
+  }) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img alt={alt} className={className} height={300} src={src} width={300} />
+  ),
 }));
 
 const problemsProps: IProblemsProps = {
@@ -68,12 +75,9 @@ describe("Problems", () => {
         {...problemsProps}
         toolFailures={[
           {
-            title: (
-              <Fragment>
-                Global popularity &ne; niche authority
-              </Fragment>
-            ),
-            description: "Generic popularity is not the same as niche authority.",
+            title: <Fragment>Global popularity &ne; niche authority</Fragment>,
+            description:
+              "Generic popularity is not the same as niche authority.",
           },
         ]}
       />,
@@ -90,7 +94,11 @@ describe("Problems", () => {
   it("stacks the illustration above the copy on mobile widths", () => {
     const { container } = render(<Problems {...problemsProps} />);
 
-    expect(container.innerHTML).toContain("flex flex-col gap-6 md:flex-row md:items-start md:gap-12");
-    expect(container.innerHTML).toContain("mx-auto shrink-0 overflow-hidden rounded-3xl md:mx-0");
+    expect(container.innerHTML).toContain(
+      "flex flex-col gap-6 md:flex-row md:items-start md:gap-12",
+    );
+    expect(container.innerHTML).toContain(
+      "mx-auto shrink-0 overflow-hidden rounded-3xl md:mx-0",
+    );
   });
 });

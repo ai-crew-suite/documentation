@@ -10,15 +10,28 @@ import type { IFeaturesProps } from "@/lib/types";
 import Features from "./Features";
 
 vi.mock("next/image", () => ({
-  default: ({ alt, className, src }: { alt: string; className?: string; src: string }) =>
+  default: ({
+    alt,
+    className,
+    src,
+  }: {
+    alt: string;
+    className?: string;
+    src: string;
+  }) => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img alt={alt} className={className} src={src} />,
+    <img alt={alt} className={className} src={src} />
+  ),
 }));
 
 vi.mock("next/link", () => ({
-  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
-    <a href={href}>{children}</a>
-  ),
+  default: ({
+    children,
+    href,
+  }: {
+    children: React.ReactNode;
+    href: string;
+  }) => <a href={href}>{children}</a>,
 }));
 
 const featureImage = {
@@ -61,9 +74,15 @@ describe("Features", () => {
     ).toBeInTheDocument();
     expect(headings).toHaveLength(2);
     expect(links).toHaveLength(2);
-    expect(screen.getAllByRole("img", { name: "Feature illustration" })).toHaveLength(2);
+    expect(
+      screen.getAllByRole("img", { name: "Feature illustration" }),
+    ).toHaveLength(2);
     expect(screen.getAllByText("Explore capability")).toHaveLength(2);
-    expect(within(headings[0].closest("article") as HTMLElement).getByText(featureProps.items[0].description)).toBeInTheDocument();
+    expect(
+      within(headings[0].closest("article") as HTMLElement).getByText(
+        featureProps.items[0].description,
+      ),
+    ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /feature one/i })).toHaveAttribute(
       "href",
       featureProps.items[0].link,

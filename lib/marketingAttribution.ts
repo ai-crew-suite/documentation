@@ -30,7 +30,9 @@ function isMarketingAttribution(value: unknown): value is MarketingAttribution {
     return false;
   }
 
-  return Object.values(value).every((entry) => entry === undefined || typeof entry === "string");
+  return Object.values(value).every(
+    (entry) => entry === undefined || typeof entry === "string",
+  );
 }
 
 function hasTrackedQueryParams(url: URL): boolean {
@@ -41,10 +43,10 @@ function hasTrackedQueryParams(url: URL): boolean {
   });
 }
 
-function readExternalReferrer(currentOrigin: string, referrer: string): Pick<
-  MarketingAttribution,
-  "referrer" | "referrer_host"
-> {
+function readExternalReferrer(
+  currentOrigin: string,
+  referrer: string,
+): Pick<MarketingAttribution, "referrer" | "referrer_host"> {
   if (!referrer) {
     return {};
   }
@@ -65,7 +67,10 @@ function readExternalReferrer(currentOrigin: string, referrer: string): Pick<
   }
 }
 
-function buildAttributionSnapshot(url: URL, referrer: string): MarketingAttribution {
+function buildAttributionSnapshot(
+  url: URL,
+  referrer: string,
+): MarketingAttribution {
   const queryAttribution = Object.fromEntries(
     TRACKED_QUERY_KEYS.flatMap((key) => {
       const value = url.searchParams.get(key);
@@ -82,7 +87,9 @@ function buildAttributionSnapshot(url: URL, referrer: string): MarketingAttribut
 }
 
 function hasAttributionData(attribution: MarketingAttribution): boolean {
-  return Object.entries(attribution).some(([key, value]) => key !== "landing_path" && Boolean(value));
+  return Object.entries(attribution).some(
+    ([key, value]) => key !== "landing_path" && Boolean(value),
+  );
 }
 
 export function readMarketingAttribution(): MarketingAttribution | null {
@@ -90,7 +97,9 @@ export function readMarketingAttribution(): MarketingAttribution | null {
     return null;
   }
 
-  const storedValue = window.sessionStorage.getItem(MARKETING_ATTRIBUTION_STORAGE_KEY);
+  const storedValue = window.sessionStorage.getItem(
+    MARKETING_ATTRIBUTION_STORAGE_KEY,
+  );
 
   if (!storedValue) {
     return null;
@@ -105,7 +114,9 @@ export function readMarketingAttribution(): MarketingAttribution | null {
   }
 }
 
-export function writeMarketingAttribution(attribution: MarketingAttribution): MarketingAttribution {
+export function writeMarketingAttribution(
+  attribution: MarketingAttribution,
+): MarketingAttribution {
   window.sessionStorage.setItem(
     MARKETING_ATTRIBUTION_STORAGE_KEY,
     JSON.stringify(attribution),
@@ -121,7 +132,10 @@ export function captureMarketingAttribution(): MarketingAttribution | null {
 
   const existingAttribution = readMarketingAttribution();
   const currentUrl = new URL(window.location.href);
-  const currentSnapshot = buildAttributionSnapshot(currentUrl, document.referrer);
+  const currentSnapshot = buildAttributionSnapshot(
+    currentUrl,
+    document.referrer,
+  );
 
   if (!hasAttributionData(currentSnapshot)) {
     return existingAttribution;
@@ -141,7 +155,9 @@ export function captureMarketingAttribution(): MarketingAttribution | null {
   return writeMarketingAttribution(currentSnapshot);
 }
 
-export function getMarketingAttributionSummary(attribution: MarketingAttribution | null): {
+export function getMarketingAttributionSummary(
+  attribution: MarketingAttribution | null,
+): {
   campaign?: string;
   medium: string;
   referrer_host?: string;

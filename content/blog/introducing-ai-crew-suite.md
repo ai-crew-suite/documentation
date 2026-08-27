@@ -23,6 +23,7 @@ AI Crew Suite solves both problems through a **deterministic pipeline architectu
 ## Core Architecture Principles
 
 ### 1. Deterministic Tool Selection
+
 Never let an LLM choose tools. Instead, we use pattern-matching against known query types to select pre-defined tool plans.
 
 ```typescript
@@ -34,6 +35,7 @@ const tools = selectToolsByPattern(userQuery, predefinedToolPlans);
 ```
 
 ### 2. Citation-Backed Outputs
+
 Every claim in an agent's output must be traceable to specific evidence. No "trust me, I'm an AI" allowed.
 
 ```typescript
@@ -47,13 +49,18 @@ const report = {
   ],
   rawEvidence: {
     "metric-p95-latency": { type: "metric", value: "p95 > 300ms" },
-    "log-timeout-error": { type: "log", excerpt: "Timeout connecting to database" },
+    "log-timeout-error": {
+      type: "log",
+      excerpt: "Timeout connecting to database",
+    },
   },
 };
 ```
 
 ### 3. Bounded Execution
+
 Every agent run has strict resource limits:
+
 - Maximum tool invocations (default: 10)
 - Maximum log bytes to read (default: 1MB)
 - Maximum context items (default: 20)
@@ -64,6 +71,7 @@ Every agent run has strict resource limits:
 AI Crew Suite includes plugins across four categories:
 
 ### Incident Response (6 plugins)
+
 - **Kubernetes AI Responder** - Automated incident triage for K8s clusters
 - **Alert Fatigue Tuner** - Continuous optimization of alerting thresholds
 - **Incident Post-Mortem Generator** - Automated RCA documentation
@@ -72,6 +80,7 @@ AI Crew Suite includes plugins across four categories:
 - **Escalation Path Optimizer** - Intelligent routing of alerts to the right teams
 
 ### Catalog Insights (5 plugins)
+
 - **Catalog Q&A** - Natural language interface for Software Catalog queries
 - **Ownership Detective** - AI-assisted ownership discovery for orphaned services
 - **Dependency Risk Analyzer** - Proactive identification of dependency risks
@@ -79,12 +88,14 @@ AI Crew Suite includes plugins across four categories:
 - **Migration Planner** - Step-by-step migration planning for deprecated technologies
 
 ### Operations (4 plugins)
+
 - **Cost Optimizer** - Resource right-sizing recommendations
 - **Performance Tuner** - Automated performance optimization
 - **Security Policy Enforcer** - Continuous security compliance checking
 - **Capacity Planner** - Predictive capacity planning
 
 ### Development (3 plugins)
+
 - **PR Review Assistant** - Context-aware code review
 - **Test Gap Analyzer** - Identification of missing test coverage
 - **Documentation Generator** - Automated API and service documentation
@@ -99,4 +110,4 @@ Over the next few weeks, we'll be publishing deep dives on each plugin category,
 
 ---
 
-*AI Crew Suite is developed by Webstack Builders and released under the Apache 2.0 license. We welcome contributions from the Backstage community!*
+_AI Crew Suite is developed by Webstack Builders and released under the Apache 2.0 license. We welcome contributions from the Backstage community!_

@@ -17,7 +17,7 @@
   --theme-color-primary-offset: #2d384d;
 
   /** A shade of the primary color for accent */
-  --theme-color-primary-inverse: #FFF;
+  --theme-color-primary-inverse: #fff;
 
   /** Secondary color for theme */
   --theme-color-secondary: #86a68d;
@@ -26,7 +26,7 @@
   --theme-color-secondary-offset: #5f7a65;
 
   /** A shade of the primary color for accent */
-  --theme-color-secondary-inverse: #FFF;
+  --theme-color-secondary-inverse: #fff;
 
   /** Accent color for theme */
   --theme-color-accent: #c66b52;
@@ -79,7 +79,7 @@
    * =============================================================================
    */
 
-   /** A color for use in page borders */
+  /** A color for use in page borders */
   --theme-color-trim: #4b5563;
 
   /** A color for use in page borders on hover */
@@ -147,7 +147,7 @@
    * =============================================================================
    */
 
-    /** Main icon color */
+  /** Main icon color */
   --theme-color-icons: #2d384d;
 
   /** A shade of the icon color for hover and focus states */

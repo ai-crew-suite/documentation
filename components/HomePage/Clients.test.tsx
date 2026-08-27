@@ -10,9 +10,18 @@ import type { IClientsProps } from "@/lib/types";
 import Clients from "./Clients";
 
 vi.mock("next/image", () => ({
-  default: ({ alt, className, src }: { alt: string; className?: string; src: string }) =>
+  default: ({
+    alt,
+    className,
+    src,
+  }: {
+    alt: string;
+    className?: string;
+    src: string;
+  }) => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img alt={alt} className={className} src={src} />,
+    <img alt={alt} className={className} src={src} />
+  ),
 }));
 
 const clientsProps: IClientsProps = {
@@ -30,7 +39,8 @@ const clientsProps: IClientsProps = {
     },
     {
       label: "Coca-Cola",
-      description: "Brand teams following how narratives spread across channels.",
+      description:
+        "Brand teams following how narratives spread across channels.",
     },
     {
       label: "Holt",
@@ -42,7 +52,8 @@ const clientsProps: IClientsProps = {
     },
     {
       label: "Universal",
-      description: "Media organizations balancing releases and market attention.",
+      description:
+        "Media organizations balancing releases and market attention.",
     },
     {
       label: "Vistra",
@@ -50,7 +61,8 @@ const clientsProps: IClientsProps = {
     },
     {
       label: "VML",
-      description: "Agency strategists turning fragmented inputs into clearer briefs.",
+      description:
+        "Agency strategists turning fragmented inputs into clearer briefs.",
     },
   ],
 };
@@ -72,9 +84,13 @@ describe("Clients", () => {
     const [logoList] = screen.getAllByRole("list", { name: "Client logos" });
     const logos = within(logoList).getAllByRole("img");
 
-    expect(screen.queryByRole("heading", { level: 2, name: clientsProps.title })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { level: 2, name: clientsProps.title }),
+    ).not.toBeInTheDocument();
     expect(screen.queryByText(clientsProps.badge)).not.toBeInTheDocument();
-    expect(screen.queryByText(clientsProps.items[0].description)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(clientsProps.items[0].description),
+    ).not.toBeInTheDocument();
     expect(logos).toHaveLength(clientLabelsWithLogo.length);
     expect(screen.getByRole("img", { name: "Canva logo" })).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "VML logo" })).toBeInTheDocument();
@@ -87,6 +103,8 @@ describe("Clients", () => {
     const logos = within(logoList).getAllByRole("img");
 
     expect(logos).toHaveLength(clientLabelsWithLogo.length);
-    expect(screen.queryByRole("img", { name: "Holt logo" })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("img", { name: "Holt logo" }),
+    ).not.toBeInTheDocument();
   });
 });

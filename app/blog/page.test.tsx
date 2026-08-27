@@ -1,10 +1,14 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import { defaultBlogPageContent, defaultBlogContentPages, getBlogContentPages } from "@/lib/blogDefaults";
+import {
+  defaultBlogPageContent,
+  defaultBlogContentPages,
+  getBlogContentPages,
+} from "@/lib/blogDefaults";
 import BlogHomePage from "./page";
 
 vi.mock("@/lib/blogDefaults", async (importOriginal) => {
-  const actual = await importOriginal() as any;
+  const actual = await importOriginal() as typeof import("@/lib/blogDefaults");
   return {
     ...actual,
     getBlogContentPages: vi.fn(),
@@ -14,13 +18,13 @@ vi.mock("@/lib/blogDefaults", async (importOriginal) => {
 describe("Blog home page", () => {
   it("renders article cards from hardcoded blog content", async () => {
     vi.mocked(getBlogContentPages).mockResolvedValue(defaultBlogContentPages);
-    
+
     const markup = renderToStaticMarkup(await BlogHomePage());
 
     expect(markup).toContain(defaultBlogPageContent.hero.title);
     expect(markup).toContain(defaultBlogPageContent.hero.description);
     expect(markup).toContain(defaultBlogPageContent.hero.badge);
-    
+
     // Check that all blog posts are rendered
     defaultBlogContentPages.forEach((post) => {
       expect(markup).toContain(post.title);
@@ -29,7 +33,7 @@ describe("Blog home page", () => {
       }
       expect(markup).toContain(`href="/blog/${post.slug.current}"`);
     });
-    
+
     expect(markup).toContain("Read article");
   });
 });

@@ -103,4 +103,3 @@ export interface IHomePageFaqProps {
   description: string;
   items: IHomePageFaqItem[];
 }
-

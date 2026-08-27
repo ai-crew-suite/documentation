@@ -11,7 +11,7 @@
   --shadow-inset: var(--shadow-inset-value);
 }
 
- :root {
+:root {
   --shadow-soft-value: 0 14px 34px
     color-mix(in srgb, var(--color-primary-offset) 10%, transparent);
   --shadow-card-value: 0 22px 44px

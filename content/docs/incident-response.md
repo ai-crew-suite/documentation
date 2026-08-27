@@ -20,6 +20,7 @@ AI Crew Suite's incident response plugins provide automated diagnostic and tunin
 The **Alert Fatigue Tuner** plugin provides an automated backend agent that statistically analyzes alert firing histories to identify noisy, self-clearing alert rule configurations and proposes reviewable Infrastructure-as-Code (IaC) threshold patches.
 
 **Key Features:**
+
 - Deterministic noise scoring using nearest-rank percentile algorithms
 - Incident & deployment correlation to suppress recommendations during real incidents
 - Surgical IaC discovery with exact line number pinpointing
@@ -32,6 +33,7 @@ The **Alert Fatigue Tuner** plugin provides an automated backend agent that stat
 The **Kubernetes AI Responder** plugin provides an automated diagnostic agent that investigates Kubernetes workload failures on-demand, triggered by Alertmanager webhooks or manual developer actions.
 
 **Key Features:**
+
 - Deterministic failure classification for common K8s errors
 - Bounded log collection with memory safeguards
 - Citation-backed diagnostics separating observed data from inference
@@ -52,20 +54,26 @@ All incident response plugins share these architectural principles:
 ## Use Cases
 
 ### Reducing Alert Fatigue
+
 Teams experiencing high alert volumes can use the Alert Fatigue Tuner to:
+
 - Identify chronically noisy alerts with statistical analysis
 - Review threshold adjustment proposals before application
 - Correlate alerts with real incidents to avoid masking real problems
 
 ### Accelerating Incident Triage
+
 On-call engineers can use the Kubernetes AI Responder to:
+
 - Automatically collect bounded diagnostics when alerts fire
 - Get cited root cause analysis with evidence backing
 - Maintain conversation context for follow-up questions
 - Reduce mean time to resolution (MTTR) for common failures
 
 ### Operational Consistency
+
 Platform teams can standardize incident response across:
+
 - Multiple Kubernetes clusters
 - Different teams with varying expertise levels
 - Day and night shift rotations
@@ -74,12 +82,14 @@ Platform teams can standardize incident response across:
 ## Getting Started
 
 ### Prerequisites
+
 - Backstage backend with `ai-core` plugin installed
 - Kubernetes cluster access (for K8s responder)
 - Alertmanager/Prometheus integration (for alert tuner)
 - LLM provider configured in Backstage
 
 ### Installation
+
 See individual plugin documentation for installation steps. Both plugins follow the standard two-package Backstage agent layout with backend modules and frontend pages.
 
 ## Configuration Examples
@@ -92,12 +102,12 @@ ai:
       enabled: true
       weeklySweep:
         enabled: true
-        schedule: "0 2 * * 0"  # Sundays at 2 AM
+        schedule: "0 2 * * 0" # Sundays at 2 AM
       tools:
         - kubernetes.workload.get_timeline
         - vcs.repository.read
         - vcs.pull_request.list
-    
+
     kubernetesAiResponder:
       enabled: true
       webhookTriggers:

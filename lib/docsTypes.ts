@@ -1,5 +1,3 @@
-import type { ReactNode } from "react";
-
 export type DocsPageFrontmatter = {
   layout?: string;
   title: string;

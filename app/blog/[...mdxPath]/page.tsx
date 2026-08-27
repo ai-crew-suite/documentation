@@ -1,3 +1,4 @@
+import type { ComponentProps } from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,6 +18,41 @@ type BlogRouteParams = {
 const blogBasePath = "/blog";
 const getBlogPagesIndex = cache(async () => await getAllBlogPages());
 
+// ReactMarkdown node type - we don't know the exact type, so we use unknown
+type ReactMarkdownNode = unknown;
+
+// Helper type for React element with props
+interface ReactElementWithProps {
+  props: {
+    children?: ReactMarkdownChildren;
+  };
+}
+
+// Type guard to check if value is a React element with props
+function isReactElementWithProps(value: unknown): value is ReactElementWithProps {
+  return typeof value === 'object' && value !== null && 'props' in value;
+}
+
+interface HeadingProps extends ComponentProps<'h1'> {
+  node: ReactMarkdownNode;
+  children: React.ReactNode;
+}
+
+interface LinkProps extends ComponentProps<'a'> {
+  node: ReactMarkdownNode;
+  href?: string;
+  children: React.ReactNode;
+}
+
+interface CodeProps extends ComponentProps<'code'> {
+  node: ReactMarkdownNode;
+  inline?: boolean;
+  className?: string;
+  children: React.ReactNode;
+}
+
+type ReactMarkdownChildren = string | React.ReactNode | React.ReactNode[];
+
 function slugifyHeading(value: string): string {
   return value
     .toLowerCase()
@@ -26,66 +62,129 @@ function slugifyHeading(value: string): string {
 }
 
 function resolveBlogHref(currentSlug: string, href: string): string {
-  if (!href || href.startsWith("#") || href.startsWith("http://") || href.startsWith("https://") || href.startsWith("mailto:") || href.startsWith("tel:")) {
+  if (
+    !href ||
+    href.startsWith("#") ||
+    href.startsWith("http://") ||
+    href.startsWith("https://") ||
+    href.startsWith("mailto:") ||
+    href.startsWith("tel:")
+  ) {
     return href;
   }
 
   if (href.startsWith("/")) {
-    return href.endsWith(".md") ? href.slice(0, -3) : href.endsWith(".mdx") ? href.slice(0, -4) : href;
+    return href.endsWith(".md")
+      ? href.slice(0, -3)
+      : href.endsWith(".mdx")
+        ? href.slice(0, -4)
+        : href;
   }
 
   const [rawPath, hash = ""] = href.split("#");
   const currentDir = path.dirname(currentSlug);
   const normalizedPath = path.normalize(path.join(currentDir, rawPath));
-  const blogPath = `${blogBasePath}/${normalizedPath}`.replace(/\.(md|mdx)$/u, "");
+  const blogPath = `${blogBasePath}/${normalizedPath}`.replace(
+    /\.(md|mdx)$/u,
+    "",
+  );
 
   return hash ? `${blogPath}#${hash}` : blogPath;
 }
 
-function childrenToString(children: any): string {
+function childrenToString(children: ReactMarkdownChildren): string {
   if (typeof children === "string") return children;
+  if (typeof children === "number") return children.toString();
   if (Array.isArray(children)) return children.map(childrenToString).join("");
-  if (children?.props?.children) return childrenToString(children.props.children);
+  if (isReactElementWithProps(children)) {
+    return childrenToString(children.props.children);
+  }
   return "";
 }
 
 function createMarkdownComponents(currentSlug: string) {
   return {
-    h1: ({ node, children, ...props }: any) => {
+    h1: ({ node: _node, children, ...props }: HeadingProps) => {
       const id = slugifyHeading(childrenToString(children));
-      return <h1 id={id} {...props}>{children}</h1>;
+      return (
+        <h1 id={id} {...props}>
+          {children}
+        </h1>
+      );
     },
-    h2: ({ node, children, ...props }: any) => {
+    h2: ({ node: _node, children, ...props }: HeadingProps) => {
       const id = slugifyHeading(childrenToString(children));
-      return <h2 id={id} {...props}>{children}</h2>;
+      return (
+        <h2 id={id} {...props}>
+          {children}
+        </h2>
+      );
     },
-    h3: ({ node, children, ...props }: any) => {
+    h3: ({ node: _node, children, ...props }: HeadingProps) => {
       const id = slugifyHeading(childrenToString(children));
-      return <h3 id={id} {...props}>{children}</h3>;
+      return (
+        <h3 id={id} {...props}>
+          {children}
+        </h3>
+      );
     },
-    h4: ({ node, children, ...props }: any) => {
+    h4: ({ node: _node, children, ...props }: HeadingProps) => {
       const id = slugifyHeading(childrenToString(children));
-      return <h4 id={id} {...props}>{children}</h4>;
+      return (
+        <h4 id={id} {...props}>
+          {children}
+        </h4>
+      );
     },
-    h5: ({ node, children, ...props }: any) => {
+    h5: ({ node: _node, children, ...props }: HeadingProps) => {
       const id = slugifyHeading(childrenToString(children));
-      return <h5 id={id} {...props}>{children}</h5>;
+      return (
+        <h5 id={id} {...props}>
+          {children}
+        </h5>
+      );
     },
-    h6: ({ node, children, ...props }: any) => {
+    h6: ({ node: _node, children, ...props }: HeadingProps) => {
       const id = slugifyHeading(childrenToString(children));
-      return <h6 id={id} {...props}>{children}</h6>;
+      return (
+        <h6 id={id} {...props}>
+          {children}
+        </h6>
+      );
     },
-    a: ({ node, href, children, ...props }: any) => {
-      const resolvedHref = resolveBlogHref(currentSlug, href || "");
-      return <Link href={resolvedHref} {...props}>{children}</Link>;
+    a: ({ node: _node, href, children, ...props }: LinkProps) => {
+      if (!href) {
+        return <>{children}</>;
+      }
+      const resolvedHref = resolveBlogHref(currentSlug, href);
+      if (
+        href.startsWith("http://") ||
+        href.startsWith("https://") ||
+        href.startsWith("mailto:") ||
+        href.startsWith("tel:")
+      ) {
+        return (
+          <a href={resolvedHref} rel="noreferrer" target="_blank" {...props}>
+            {children}
+          </a>
+        );
+      }
+      return (
+        <Link href={resolvedHref} {...props}>
+          {children}
+        </Link>
+      );
     },
-    code: ({ node, inline, className, children, ...props }: any) => {
+    code: ({ node: _node, inline, className, children, ...props }: CodeProps) => {
       const language = className?.replace("language-", "");
       return inline ? (
         <code {...props}>{children}</code>
       ) : (
         <pre>
-          <code className={language ? `language-${language}` : undefined} {...props}>
+          <code
+            className={language ? `language-${language}` : undefined}
+            {...props}
+          >
             {children}
           </code>
         </pre>
@@ -112,7 +211,7 @@ export async function generateMetadata(props: {
       title: "Blog post not found",
     };
   }
-  
+
   const metadata: Metadata = {
     title: page.frontmatter.title,
   };
@@ -133,7 +232,9 @@ export async function generateMetadata(props: {
   return metadata;
 }
 
-export default async function BlogArticlePage(props: { params: Promise<BlogRouteParams> }) {
+export default async function BlogArticlePage(props: {
+  params: Promise<BlogRouteParams>;
+}) {
   const params = await props.params;
   const slug = params.mdxPath.join("/");
   const page = await getBlogPage(slug);
@@ -145,7 +246,8 @@ export default async function BlogArticlePage(props: { params: Promise<BlogRoute
   // Get preview image from mapping
   const imageKey = page.frontmatter.previewImage || "feature-01";
   const previewImage = blogImageMap[imageKey] || blogImageMap["feature-01"];
-  const previewImageSrc = typeof previewImage === 'string' ? previewImage : previewImage.src;
+  const previewImageSrc =
+    typeof previewImage === "string" ? previewImage : previewImage.src;
 
   const markdownComponents = createMarkdownComponents(slug);
   const content = (
@@ -179,15 +281,21 @@ export default async function BlogArticlePage(props: { params: Promise<BlogRoute
               <span className="rounded-full bg-secondary px-3 py-1 font-medium text-content-inverse">
                 Blog
               </span>
-              {page.frontmatter.publishedAt ? <span>{page.frontmatter.publishedAt}</span> : null}
+              {page.frontmatter.publishedAt ? (
+                <span>{page.frontmatter.publishedAt}</span>
+              ) : null}
             </div>
           </header>
 
-          <h1 className="text-4xl font-semibold tracking-tight text-secondary">{page.frontmatter.title}</h1>
-          
+          <h1 className="text-4xl font-semibold tracking-tight text-secondary">
+            {page.frontmatter.title}
+          </h1>
+
           <div className="min-w-0 wrap-break-word text-content markdown-content">
             {page.frontmatter.description && (
-              <p className="text-lg leading-8 text-content-active mb-6">{page.frontmatter.description}</p>
+              <p className="text-lg leading-8 text-content-active mb-6">
+                {page.frontmatter.description}
+              </p>
             )}
             {content}
           </div>

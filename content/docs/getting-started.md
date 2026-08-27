@@ -43,8 +43,8 @@ AI Crew Suite is a collection of deterministic AI agents designed to work within
 2. **Configure the backend module** in your `packages/backend/src/plugins/ai.ts`:
 
    ```typescript
-   import { createAlertAiTunerModule } from '@webstackbuilders/plugin-ai-agent-backend-alert-ai-tuner';
-   
+   import { createAlertAiTunerModule } from "@webstackbuilders/plugin-ai-agent-backend-alert-ai-tuner";
+
    export const aiModules = [
      createAlertAiTunerModule(),
      // ... other AI modules
@@ -55,7 +55,7 @@ AI Crew Suite is a collection of deterministic AI agents designed to work within
 
    ```typescript
    import { AlertAiTunerPage } from '@webstackbuilders/plugin-ai-agent-frontend-alert-ai-tuner';
-   
+
    const routes = (
      <FlatRoutes>
        <Route path="/alert-ai-tuner" element={<AlertAiTunerPage />} />

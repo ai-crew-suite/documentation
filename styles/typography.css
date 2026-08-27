@@ -75,7 +75,9 @@
     text-decoration-color: color-mix(in srgb, currentColor 28%, transparent);
     text-decoration-thickness: 0.08em;
     text-underline-offset: 0.14em;
-    transition: color 150ms ease, text-decoration-color 150ms ease;
+    transition:
+      color 150ms ease,
+      text-decoration-color 150ms ease;
   }
 
   a:hover,

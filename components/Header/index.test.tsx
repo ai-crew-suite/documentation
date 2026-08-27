@@ -9,12 +9,23 @@ import { defaultHeaderComponentContent } from "@/lib/headerDefaults";
 
 import { Header } from "./index";
 
-(globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+(
+  globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+).IS_REACT_ACT_ENVIRONMENT = true;
 
 vi.mock("next/image", () => ({
-  default: ({ alt, className, src }: { alt: string; className?: string; src: string }) =>
+  default: ({
+    alt,
+    className,
+    src,
+  }: {
+    alt: string;
+    className?: string;
+    src: string;
+  }) => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img alt={alt} className={className} src={src} />,
+    <img alt={alt} className={className} src={src} />
+  ),
 }));
 
 vi.mock("@/components/ThemeToggle", () => ({
@@ -50,7 +61,9 @@ afterEach(async () => {
 
 describe("Header", () => {
   it("renders the fixed navigation shell and primary links", () => {
-    const markup = renderToStaticMarkup(<Header content={defaultHeaderComponentContent} />);
+    const markup = renderToStaticMarkup(
+      <Header content={defaultHeaderComponentContent} />,
+    );
 
     expect(markup).toContain('id="marketing-nav"');
     expect(markup).toContain('href="/tour"');
@@ -60,7 +73,9 @@ describe("Header", () => {
   });
 
   it("places the theme toggle between the nav links and signup", () => {
-    const markup = renderToStaticMarkup(<Header content={defaultHeaderComponentContent} />);
+    const markup = renderToStaticMarkup(
+      <Header content={defaultHeaderComponentContent} />,
+    );
     const docsIndex = markup.indexOf('href="/docs"');
     const themeToggleIndex = markup.indexOf('aria-label="Theme toggle"');
     const signupIndex = markup.indexOf('href="/signup"');
@@ -70,10 +85,16 @@ describe("Header", () => {
   });
 
   it("allows the brand cluster to shrink on mobile widths", () => {
-    const markup = renderToStaticMarkup(<Header content={defaultHeaderComponentContent} />);
+    const markup = renderToStaticMarkup(
+      <Header content={defaultHeaderComponentContent} />,
+    );
 
-    expect(markup).toContain("flex min-w-0 items-center gap-2 text-content-active no-underline sm:gap-3");
-    expect(markup).toContain("min-w-0 truncate text-lg font-semibold tracking-tight text-secondary");
+    expect(markup).toContain(
+      "flex min-w-0 items-center gap-2 text-content-active no-underline sm:gap-3",
+    );
+    expect(markup).toContain(
+      "min-w-0 truncate text-lg font-semibold tracking-tight text-secondary",
+    );
   });
 
   it("opens the mobile navigation menu from the hamburger button", async () => {
@@ -85,19 +106,23 @@ describe("Header", () => {
       root?.render(<Header content={defaultHeaderComponentContent} />);
     });
 
-    const menuButton = container.querySelector('button[aria-label="Open navigation menu"]');
+    const menuButton = container.querySelector(
+      'button[aria-label="Open navigation menu"]',
+    );
 
     expect(menuButton).not.toBeNull();
-    expect(container.querySelector('#mobile-navigation')).toBeNull();
+    expect(container.querySelector("#mobile-navigation")).toBeNull();
 
     await act(async () => {
       menuButton?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
 
-    const mobileMenu = container.querySelector('#mobile-navigation');
+    const mobileMenu = container.querySelector("#mobile-navigation");
 
     expect(mobileMenu).not.toBeNull();
-    expect(container.querySelector('button[aria-label="Close navigation menu"]')).not.toBeNull();
+    expect(
+      container.querySelector('button[aria-label="Close navigation menu"]'),
+    ).not.toBeNull();
     expect(mobileMenu?.textContent).toContain("How It Works");
     expect(mobileMenu?.textContent).toContain("Sign up");
   });

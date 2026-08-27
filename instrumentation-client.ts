@@ -5,7 +5,8 @@ const logRocketAppId = process.env.NEXT_PUBLIC_LOGROCKET_APP_ID;
 const sentryDsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
 const telemetryEnabled = process.env.NODE_ENV !== "development";
 const shouldInitSentry = telemetryEnabled && typeof sentryDsn === "string";
-const shouldInitLogRocket = telemetryEnabled && typeof logRocketAppId === "string";
+const shouldInitLogRocket =
+  telemetryEnabled && typeof logRocketAppId === "string";
 
 if (shouldInitLogRocket) {
   LogRocket.init(logRocketAppId);

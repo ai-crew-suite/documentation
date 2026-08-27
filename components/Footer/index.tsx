@@ -25,7 +25,11 @@ export function Footer({ brandTagline, content }: FooterProps) {
   } = content;
 
   return (
-    <PageSection as="footer" id="marketing-footer" classes="my-6 py-6 sm:py-8 px-6 sm:px-12">
+    <PageSection
+      as="footer"
+      id="marketing-footer"
+      classes="my-6 py-6 sm:py-8 px-6 sm:px-12"
+    >
       <div className="grid gap-8 lg:grid-cols-[4fr_1fr_1fr_1fr]">
         <div className="flex flex-col gap-5">
           <Link
@@ -51,7 +55,10 @@ export function Footer({ brandTagline, content }: FooterProps) {
         </div>
 
         <div className="grid grid-cols-2 gap-8 lg:contents">
-          <nav aria-label="Footer product links" className="flex flex-col gap-4">
+          <nav
+            aria-label="Footer product links"
+            className="flex flex-col gap-4"
+          >
             <p className="m-0 text-xs font-semibold uppercase tracking-widest text-content-active">
               Explore
             </p>

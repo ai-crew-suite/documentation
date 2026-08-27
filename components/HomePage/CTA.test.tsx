@@ -10,9 +10,13 @@ import { defaultCtaProps } from "@/lib/homePageDefaults";
 import { CTA } from "./CTA";
 
 vi.mock("next/link", () => ({
-  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
-    <a href={href}>{children}</a>
-  ),
+  default: ({
+    children,
+    href,
+  }: {
+    children: React.ReactNode;
+    href: string;
+  }) => <a href={href}>{children}</a>,
 }));
 
 describe("CTA", () => {
@@ -24,7 +28,9 @@ describe("CTA", () => {
     });
     const primaryLink = within(region).getByRole("link");
 
-    expect(within(region).getByRole("heading", { level: 2 })).toBeInTheDocument();
+    expect(
+      within(region).getByRole("heading", { level: 2 }),
+    ).toBeInTheDocument();
     expect(primaryLink).toHaveAttribute("href", "/signup");
   });
 });

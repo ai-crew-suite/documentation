@@ -1,6 +1,5 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { blogImageMap } from "@/lib/blogDefaults";
 
 vi.mock("@/lib/blogDefaults", () => ({
   blogImageMap: {
@@ -21,15 +20,26 @@ describe("Blog catch-all page", () => {
   const mockBlogPage = {
     slug: "introducing-ai-crew-suite",
     frontmatter: {
-      title: "Introducing AI Crew Suite: Eighteen agentic workflow plugins for Backstage",
-      description: "A deep dive into the architecture and philosophy behind our monorepo of agentic workflow plugins for Spotify's Backstage IDP.",
+      title:
+        "Introducing AI Crew Suite: Eighteen agentic workflow plugins for Backstage",
+      description:
+        "A deep dive into the architecture and philosophy behind our monorepo of agentic workflow plugins for Spotify's Backstage IDP.",
       publishedAt: "August 27, 2026",
       previewImage: "feature-01",
     },
-    content: "# Introducing AI Crew Suite\n\nToday we're excited to announce the release of **AI Crew Suite**...",
+    content:
+      "# Introducing AI Crew Suite\n\nToday we're excited to announce the release of **AI Crew Suite**...",
     headings: [
-      { depth: 1, value: "Introducing AI Crew Suite", id: "introducing-ai-crew-suite" },
-      { depth: 2, value: "Core Architecture Principles", id: "core-architecture-principles" },
+      {
+        depth: 1,
+        value: "Introducing AI Crew Suite",
+        id: "introducing-ai-crew-suite",
+      },
+      {
+        depth: 2,
+        value: "Core Architecture Principles",
+        id: "core-architecture-principles",
+      },
     ],
   };
 
@@ -42,18 +52,18 @@ describe("Blog catch-all page", () => {
     const { generateStaticParams } = await import("./page");
 
     const params = await generateStaticParams();
-    
-    expect(params).toEqual([
-      { mdxPath: ["introducing-ai-crew-suite"] },
-    ]);
+
+    expect(params).toEqual([{ mdxPath: ["introducing-ai-crew-suite"] }]);
   });
 
   it("loads the requested blog article from markdown content", async () => {
     const { default: BlogArticlePage } = await import("./page");
     const markup = renderToStaticMarkup(
-      await BlogArticlePage({ params: Promise.resolve({ 
-        mdxPath: ["introducing-ai-crew-suite"] 
-      }) }),
+      await BlogArticlePage({
+        params: Promise.resolve({
+          mdxPath: ["introducing-ai-crew-suite"],
+        }),
+      }),
     );
 
     expect(markup).toContain(mockBlogPage.frontmatter.title);
@@ -67,8 +77,8 @@ describe("Blog catch-all page", () => {
   it("maps blog article content into next metadata", async () => {
     const { generateMetadata } = await import("./page");
     const metadata = await generateMetadata({
-      params: Promise.resolve({ 
-        mdxPath: ["introducing-ai-crew-suite"] 
+      params: Promise.resolve({
+        mdxPath: ["introducing-ai-crew-suite"],
       }),
     });
 

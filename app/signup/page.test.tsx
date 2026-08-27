@@ -3,13 +3,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { defaultSignupPageContent } from "@/lib/signupDefaults";
 
-
-
 vi.mock("@/lib/signupDefaults", () => ({
   defaultSignupPageContent: {
     metadata: {
       title: "AI Crew Suite Sign Up",
-      description: "Request access to AI Crew Suite and tell us how your editorial workflow works today.",
+      description:
+        "Request access to AI Crew Suite and tell us how your editorial workflow works today.",
     },
     hero: {
       badge: "Sign up",

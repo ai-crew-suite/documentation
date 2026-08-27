@@ -11,7 +11,9 @@ describe("TourPage", () => {
     expect(markup).toContain(defaultTourPageContent.metadata.title);
     expect(markup).toContain(defaultTourPageContent.hero.eyebrow);
     expect(markup).toContain(defaultTourPageContent.workflowSection.title);
-    expect(markup).toContain(defaultTourPageContent.capabilitiesSection.items[0].title);
+    expect(markup).toContain(
+      defaultTourPageContent.capabilitiesSection.items[0].title,
+    );
     expect(markup).toContain(defaultTourPageContent.ctaSection.title);
     expect(markup).toContain('href="/signup"');
     expect(markup).toContain('href="/docs/reference/overview"');

@@ -38,24 +38,31 @@ export type PrivacyPageContent = {
 export const defaultPrivacyPageContent: PrivacyPageContent = {
   metadata: {
     title: "Privacy Policy | AI Crew Suite",
-    description: "Learn how AI Crew Suite collects, uses, and protects your personal information.",
+    description:
+      "Learn how AI Crew Suite collects, uses, and protects your personal information.",
   },
   hero: {
     title: "Privacy Policy",
-    description: "Your privacy is important to us. This policy explains how AI Crew Suite collects, uses, and protects your information when you use our services.",
+    description:
+      "Your privacy is important to us. This policy explains how AI Crew Suite collects, uses, and protects your information when you use our services.",
     effectiveDate: "Effective August 27, 2026",
   },
   summarySection: {
     items: [
-      { text: "We collect only the information necessary to provide and improve our services." },
+      {
+        text: "We collect only the information necessary to provide and improve our services.",
+      },
       { text: "Your data is never sold to third parties." },
-      { text: "You have full control over your data and can delete it at any time." },
+      {
+        text: "You have full control over your data and can delete it at any time.",
+      },
     ],
   },
   policySection: {
     eyebrow: "Policy details",
     title: "How we handle your data",
-    description: "This section provides a detailed breakdown of our data practices.",
+    description:
+      "This section provides a detailed breakdown of our data practices.",
     items: [
       {
         title: "Information we collect",
@@ -86,7 +93,8 @@ export const defaultPrivacyPageContent: PrivacyPageContent = {
   contactSection: {
     eyebrow: "Questions?",
     title: "Contact us about privacy",
-    description: "If you have any questions or concerns about our privacy practices, please reach out.",
+    description:
+      "If you have any questions or concerns about our privacy practices, please reach out.",
     primaryAction: {
       href: "mailto:privacy@aicrewsuite.com",
       label: "Email our privacy team",

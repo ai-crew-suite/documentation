@@ -48,10 +48,16 @@ export function Clarity({ clarityId }: ClarityProps) {
       syncConsent(consentEvent.detail?.marketing ?? null);
     };
 
-    window.addEventListener(MARKETING_CONSENT_CHANGED_EVENT, handleConsentChanged);
+    window.addEventListener(
+      MARKETING_CONSENT_CHANGED_EVENT,
+      handleConsentChanged,
+    );
 
     return () => {
-      window.removeEventListener(MARKETING_CONSENT_CHANGED_EVENT, handleConsentChanged);
+      window.removeEventListener(
+        MARKETING_CONSENT_CHANGED_EVENT,
+        handleConsentChanged,
+      );
     };
   }, [clarityId]);
 

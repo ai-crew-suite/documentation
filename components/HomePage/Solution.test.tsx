@@ -10,9 +10,18 @@ import type { ISolutionProps } from "@/lib/types";
 import Solution from "./Solution";
 
 vi.mock("next/image", () => ({
-  default: ({ alt, className, src }: { alt: string; className?: string; src: string }) =>
+  default: ({
+    alt,
+    className,
+    src,
+  }: {
+    alt: string;
+    className?: string;
+    src: string;
+  }) => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img alt={alt} className={className} src={src} />,
+    <img alt={alt} className={className} src={src} />
+  ),
 }));
 
 const stepImage = {
@@ -36,7 +45,9 @@ describe("Solution", () => {
   it("renders the solution overview and step images", () => {
     render(<Solution {...solutionProps} />);
 
-    const stepList = screen.getByRole("list", { name: "How AI Crew Suite works" });
+    const stepList = screen.getByRole("list", {
+      name: "How AI Crew Suite works",
+    });
 
     expect(
       screen.getByRole("heading", {

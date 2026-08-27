@@ -28,7 +28,8 @@ export type SignupPageContent = {
 export const defaultSignupPageContent: SignupPageContent = {
   metadata: {
     title: "Sign Up | AI Crew Suite",
-    description: "Get started with AI-powered workflow automation for your Backstage developer portal.",
+    description:
+      "Get started with AI-powered workflow automation for your Backstage developer portal.",
   },
   hero: {
     badge: "Get Started",

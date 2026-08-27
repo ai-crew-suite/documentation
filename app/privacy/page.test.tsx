@@ -62,7 +62,9 @@ import { getPrivacyPageContent } from "@/lib/privacyDefaults";
 
 describe("PrivacyPage", () => {
   beforeEach(() => {
-    vi.mocked(getPrivacyPageContent).mockResolvedValue(defaultPrivacyPageContent);
+    vi.mocked(getPrivacyPageContent).mockResolvedValue(
+      defaultPrivacyPageContent,
+    );
   });
 
   it("renders the privacy policy route with Sanity-backed sections", async () => {

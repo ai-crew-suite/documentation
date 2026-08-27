@@ -49,13 +49,20 @@
      Typography — widows, orphans, page breaks
      -------------------------------------------------------------------------- */
 
-  p, blockquote, figcaption {
+  p,
+  blockquote,
+  figcaption {
     orphans: 3;
     widows: 3;
   }
 
   /* Keep headings attached to the content that follows them */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     break-after: avoid;
     orphans: 3;
     widows: 3;
@@ -85,7 +92,8 @@
      Lists, figures, tables, code — avoid page breaks inside
      -------------------------------------------------------------------------- */
 
-  li, [data-qr-code] {
+  li,
+  [data-qr-code] {
     break-inside: avoid;
   }
 
@@ -139,8 +147,8 @@
      Backgrounds — override grey offset areas to paper-white
      -------------------------------------------------------------------------- */
 
-  html, body {
+  html,
+  body {
     background-color: #fff !important;
   }
-
 }

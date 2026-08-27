@@ -20,6 +20,7 @@ Operations plugins in AI Crew Suite automate routine maintenance, optimization, 
 While categorized under Incident Response, the **Alert Fatigue Tuner** serves a critical operations function by continuously optimizing alerting systems to reduce noise and improve signal clarity.
 
 **Operational Benefits:**
+
 - Automated weekly noise analysis across alerting systems
 - Infrastructure-as-Code threshold optimization proposals
 - Correlation with deployment timelines to understand impact
@@ -32,6 +33,7 @@ While categorized under Incident Response, the **Alert Fatigue Tuner** serves a 
 The **Kubernetes AI Responder** provides operational consistency in incident diagnosis, ensuring all team members follow the same evidence-gathering processes regardless of experience level.
 
 **Operational Benefits:**
+
 - Standardized diagnostic workflows for common failures
 - Bounded resource consumption during investigations
 - Consistent evidence collection and presentation
@@ -53,6 +55,7 @@ AI Crew Suite's operations plugins follow these core principles:
 ### Alert Hygiene Management
 
 **Weekly Tuning Workflow:**
+
 1. **Friday Evening**: Alert Fatigue Tuner begins weekly noise analysis
 2. **Saturday Morning**: Team reviews optimization proposals with cited evidence
 3. **Monday Morning**: Approved changes are applied via Infrastructure-as-Code
@@ -61,6 +64,7 @@ AI Crew Suite's operations plugins follow these core principles:
 ### Incident Response Standardization
 
 **Incident Triage Workflow:**
+
 1. **Alert Fires**: Kubernetes AI Responder is triggered via Alertmanager webhook
 2. **Automatic Diagnostics**: Bounded evidence collection begins immediately
 3. **On-call Review**: Engineer examines cited diagnostic report
@@ -75,12 +79,12 @@ ai:
       teamScoped: true
       weeklySweep:
         enabled: true
-        schedule: "0 2 * * 0"  # Sundays at 2 AM
-    
+        schedule: "0 2 * * 0" # Sundays at 2 AM
+
     kubernetesAiResponder:
       namespaceScoped: true
       resourceLimits:
-        maxLogBytes: 1048576  # 1MB per investigation
+        maxLogBytes: 1048576 # 1MB per investigation
         maxToolInvocations: 20
 ```
 

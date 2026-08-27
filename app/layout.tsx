@@ -55,7 +55,10 @@ export default async function RootLayout({
         <Header content={headerContent} />
         {children}
         <Consent content={consentContent} />
-        <Footer brandTagline={brandSettingsContent.tagline} content={footerContent} />
+        <Footer
+          brandTagline={brandSettingsContent.tagline}
+          content={footerContent}
+        />
       </body>
     </html>
   );

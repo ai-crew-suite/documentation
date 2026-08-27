@@ -13,12 +13,16 @@ import {
 } from "@/lib/marketingConsent";
 
 vi.mock("@next/third-parties/google", () => ({
-  GoogleTagManager: ({ gtmId }: { gtmId: string }) => <div data-testid="gtm">{gtmId}</div>,
+  GoogleTagManager: ({ gtmId }: { gtmId: string }) => (
+    <div data-testid="gtm">{gtmId}</div>
+  ),
 }));
 
 import { GoogleTagManagerWithConsent } from ".";
 
-(globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+(
+  globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+).IS_REACT_ACT_ENVIRONMENT = true;
 
 afterEach(async () => {
   cleanup();

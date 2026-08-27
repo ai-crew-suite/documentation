@@ -21,7 +21,8 @@ export type DocsPageContent = {
     items: Array<{
       title: string;
       description: string;
-      iconKey: "panelsTopLeft" | "orbit" | "bookOpen" | "shieldCheck" | "zap" | "cog";
+      iconKey:
+        "panelsTopLeft" | "orbit" | "bookOpen" | "shieldCheck" | "zap" | "cog";
       href: string;
     }>;
   };
@@ -30,7 +31,8 @@ export type DocsPageContent = {
 export const defaultDocsPageContent: DocsPageContent = {
   metadata: {
     title: "AI Crew Suite Documentation",
-    description: "Comprehensive documentation for the AI Crew Suite - eighteen agentic workflow plugins for Spotify's Backstage IDP.",
+    description:
+      "Comprehensive documentation for the AI Crew Suite - eighteen agentic workflow plugins for Spotify's Backstage IDP.",
   },
   hero: {
     badge: "Documentation",
@@ -50,25 +52,29 @@ export const defaultDocsPageContent: DocsPageContent = {
     items: [
       {
         title: "Incident Response",
-        description: "Automated diagnostic and tuning agents for Kubernetes incidents and alert fatigue management.",
+        description:
+          "Automated diagnostic and tuning agents for Kubernetes incidents and alert fatigue management.",
         iconKey: "shieldCheck",
         href: "/docs/incident-response",
       },
       {
         title: "Catalog Insights",
-        description: "Conversational interface for answering operational questions about any Software Catalog entity.",
+        description:
+          "Conversational interface for answering operational questions about any Software Catalog entity.",
         iconKey: "orbit",
         href: "/docs/catalog",
       },
       {
         title: "Operations",
-        description: "Agentic workflow plugins for daily operations, maintenance, and optimization tasks.",
+        description:
+          "Agentic workflow plugins for daily operations, maintenance, and optimization tasks.",
         iconKey: "cog",
         href: "/docs/operations",
       },
       {
         title: "Developer Guide",
-        description: "Learn how to extend, customize, and integrate AI Crew Suite plugins into your Backstage instance.",
+        description:
+          "Learn how to extend, customize, and integrate AI Crew Suite plugins into your Backstage instance.",
         iconKey: "bookOpen",
         href: "/docs/developer-guide",
       },

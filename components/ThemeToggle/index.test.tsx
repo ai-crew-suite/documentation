@@ -6,7 +6,9 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import { ThemeToggle } from "./index";
 
-(globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+(
+  globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+).IS_REACT_ACT_ENVIRONMENT = true;
 
 let root: Root | null = null;
 let container: HTMLDivElement | null = null;
@@ -36,7 +38,9 @@ describe("ThemeToggle", () => {
       root?.render(<ThemeToggle />);
     });
 
-    const darkToggle = container.querySelector('button[aria-label="Switch to dark theme"]');
+    const darkToggle = container.querySelector(
+      'button[aria-label="Switch to dark theme"]',
+    );
 
     expect(darkToggle).not.toBeNull();
 
@@ -47,9 +51,13 @@ describe("ThemeToggle", () => {
     expect(document.documentElement.dataset.theme).toBe("dark");
     expect(document.documentElement.style.colorScheme).toBe("dark");
     expect(localStorage.getItem("marketing-theme")).toBe("dark");
-    expect(container.querySelector('button[aria-label="Switch to light theme"]')).not.toBeNull();
+    expect(
+      container.querySelector('button[aria-label="Switch to light theme"]'),
+    ).not.toBeNull();
 
-    const lightToggle = container.querySelector('button[aria-label="Switch to light theme"]');
+    const lightToggle = container.querySelector(
+      'button[aria-label="Switch to light theme"]',
+    );
 
     await act(async () => {
       lightToggle?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -58,7 +66,9 @@ describe("ThemeToggle", () => {
     expect(document.documentElement.dataset.theme).toBe("light");
     expect(document.documentElement.style.colorScheme).toBe("light");
     expect(localStorage.getItem("marketing-theme")).toBe("light");
-    expect(container.querySelector('button[aria-label="Switch to dark theme"]')).not.toBeNull();
+    expect(
+      container.querySelector('button[aria-label="Switch to dark theme"]'),
+    ).not.toBeNull();
   });
 
   it("prefers a stored theme over the default document theme", async () => {
@@ -73,6 +83,8 @@ describe("ThemeToggle", () => {
 
     expect(document.documentElement.dataset.theme).toBe("dark");
     expect(document.documentElement.style.colorScheme).toBe("dark");
-    expect(container.querySelector('button[aria-label="Switch to light theme"]')).not.toBeNull();
+    expect(
+      container.querySelector('button[aria-label="Switch to light theme"]'),
+    ).not.toBeNull();
   });
 });

@@ -13,7 +13,11 @@ type DocsPageSidebarProps = {
   toc: TocItem[];
 };
 
-export function DocsPageSidebar({ currentPath, navigation, toc }: DocsPageSidebarProps) {
+export function DocsPageSidebar({
+  currentPath,
+  navigation,
+  toc,
+}: DocsPageSidebarProps) {
   return (
     <aside className="sticky top-24 space-y-8">
       {/* Navigation sections */}
@@ -22,7 +26,9 @@ export function DocsPageSidebar({ currentPath, navigation, toc }: DocsPageSideba
           <h3 className="font-semibold text-content-active">Documentation</h3>
           {navigation.map((section) => (
             <div key={section.title} className="space-y-2">
-              <h4 className="text-sm font-medium text-content-active">{section.title}</h4>
+              <h4 className="text-sm font-medium text-content-active">
+                {section.title}
+              </h4>
               <ul className="space-y-1">
                 {section.items.map((item) => (
                   <li key={item.href}>
@@ -47,7 +53,9 @@ export function DocsPageSidebar({ currentPath, navigation, toc }: DocsPageSideba
       {/* Table of Contents */}
       {toc.length > 0 && (
         <div className="space-y-4">
-          <h3 className="font-semibold text-content-active">Table of Contents</h3>
+          <h3 className="font-semibold text-content-active">
+            Table of Contents
+          </h3>
           <ul className="space-y-2">
             {toc.map((item) => (
               <li key={item.id}>

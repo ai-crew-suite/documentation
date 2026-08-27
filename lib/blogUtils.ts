@@ -2,11 +2,17 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
 import { cache } from "react";
-import type { BlogPageContentMarkdown, BlogPageFrontmatter, BlogPageListItem } from "./blogTypes";
+import type {
+  BlogPageContentMarkdown,
+  BlogPageFrontmatter,
+  BlogPageListItem,
+} from "./blogTypes";
 
 const blogDirectory = path.join(process.cwd(), "content/blog");
 
-function extractHeadings(markdown: string): { depth: number; value: string; id: string }[] {
+function extractHeadings(
+  markdown: string,
+): { depth: number; value: string; id: string }[] {
   const headingRegex = /^(#{1,6})\s+(.+)$/gm;
   const headings = [];
   let match;
@@ -41,7 +47,7 @@ async function readAllBlogPages(): Promise<BlogPageContentMarkdown[]> {
       const filePath = path.join(blogDirectory, file);
       const source = await fs.readFile(filePath, "utf-8");
       const { data, content } = matter(source);
-      const frontmatter = data as Record<string, any>;
+      const frontmatter = data as Partial<BlogPageFrontmatter>;
       const headings = extractHeadings(content);
       return {
         slug,
@@ -56,19 +62,23 @@ async function readAllBlogPages(): Promise<BlogPageContentMarkdown[]> {
         content,
         headings,
       };
-    })
+    }),
   );
   return pages;
 }
 
-export const getAllBlogPages = cache(async (): Promise<BlogPageContentMarkdown[]> => {
-  return await readAllBlogPages();
-});
+export const getAllBlogPages = cache(
+  async (): Promise<BlogPageContentMarkdown[]> => {
+    return await readAllBlogPages();
+  },
+);
 
-export const getBlogPage = cache(async (slug: string): Promise<BlogPageContentMarkdown | null> => {
-  const pages = await getAllBlogPages();
-  return pages.find((page) => page.slug === slug) || null;
-});
+export const getBlogPage = cache(
+  async (slug: string): Promise<BlogPageContentMarkdown | null> => {
+    const pages = await getAllBlogPages();
+    return pages.find((page) => page.slug === slug) || null;
+  },
+);
 
 function parseDate(dateStr: string | undefined): Date | null {
   if (!dateStr) return null;
@@ -90,7 +100,7 @@ export const getBlogPageList = cache(async (): Promise<BlogPageListItem[]> => {
     author: page.frontmatter.author,
     tags: page.frontmatter.tags,
   }));
-  
+
   // Sort by publishedAt descending (newest first)
   items.sort((a, b) => {
     const dateA = parseDate(a.publishedAt);
@@ -100,6 +110,6 @@ export const getBlogPageList = cache(async (): Promise<BlogPageListItem[]> => {
     if (dateB) return 1;
     return 0;
   });
-  
+
   return items;
 });

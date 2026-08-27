@@ -7,4 +7,4 @@ export const themeInitScript = () => {
       document.documentElement.style.colorScheme = storedTheme;
     }
   } catch {}
-}
+};

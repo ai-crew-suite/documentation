@@ -144,11 +144,16 @@ export function getSignupHiddenAttributionFields(
   attribution: MarketingAttribution | null,
   pagePath: string,
 ): HiddenSignupField[] {
-  const conversionContext = buildMarketingConversionContext(attribution, pagePath);
+  const conversionContext = buildMarketingConversionContext(
+    attribution,
+    pagePath,
+  );
 
   return HIDDEN_SIGNUP_FIELD_NAMES.flatMap((name) => {
     const value = conversionContext[name];
 
-    return typeof value === "string" && value.length > 0 ? [{ name, value }] : [];
+    return typeof value === "string" && value.length > 0
+      ? [{ name, value }]
+      : [];
   });
 }

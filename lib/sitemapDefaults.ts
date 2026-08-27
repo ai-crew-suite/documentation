@@ -23,14 +23,17 @@ export const defaultSitemapContent: SitemapContent = {
     { documentType: "docsPage", lastModified: "2026-08-27T00:00:00.000Z" },
     { documentType: "tourPage", lastModified: "2026-08-27T00:00:00.000Z" },
     { documentType: "signupPage", lastModified: "2026-08-27T00:00:00.000Z" },
-    { documentType: "compliancePage", lastModified: "2026-08-27T00:00:00.000Z" },
+    {
+      documentType: "compliancePage",
+      lastModified: "2026-08-27T00:00:00.000Z",
+    },
     { documentType: "privacyPage", lastModified: "2026-08-27T00:00:00.000Z" },
     { documentType: "termsPage", lastModified: "2026-08-27T00:00:00.000Z" },
     { documentType: "cookiesPage", lastModified: "2026-08-27T00:00:00.000Z" },
   ],
   blogPages: defaultBlogContentPages.map((page) => ({
     slug: page.slug.current,
-    lastModified: page.publishedAt 
+    lastModified: page.publishedAt
       ? new Date(page.publishedAt).toISOString()
       : "2026-08-27T00:00:00.000Z",
   })),

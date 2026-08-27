@@ -79,7 +79,7 @@
    * =============================================================================
    */
 
-   /** A color for use in page borders */
+  /** A color for use in page borders */
   --theme-color-trim: #8fa2c1;
 
   /** A color for use in page borders on hover */
@@ -147,7 +147,7 @@
    * =============================================================================
    */
 
-    /** Main icon color */
+  /** Main icon color */
   --theme-color-icons: #e9edf1;
 
   /** A shade of the icon color for hover and focus states */

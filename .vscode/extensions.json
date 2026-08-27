@@ -1,6 +1,3 @@
 {
-  "recommendations": [
-    "astral-sh.uv-vscode",
-    "ms-pyright.pyright"
-  ]
+  "recommendations": ["astral-sh.uv-vscode", "ms-pyright.pyright"]
 }

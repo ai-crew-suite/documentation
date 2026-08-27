@@ -19,7 +19,8 @@ export type FooterComponentContent = {
 };
 
 export const defaultFooterComponentContent: FooterComponentContent = {
-  description: "AI Crew Suite supercharges your Backstage developer portal with AI-powered workflows. Automate software delivery, infrastructure management, and developer onboarding with intelligent agents.",
+  description:
+    "AI Crew Suite supercharges your Backstage developer portal with AI-powered workflows. Automate software delivery, infrastructure management, and developer onboarding with intelligent agents.",
   primaryAction: {
     text: "Start Your First Project",
     link: "/signup",

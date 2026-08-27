@@ -10,8 +10,12 @@ describe("CookiesPage", () => {
 
     expect(markup).toContain(defaultCookiesPageContent.metadata.title);
     expect(markup).toContain(defaultCookiesPageContent.hero.title);
-    expect(markup).toContain(defaultCookiesPageContent.policySection.items[0].title);
-    expect(markup).toContain(defaultCookiesPageContent.policySection.items[1].title);
+    expect(markup).toContain(
+      defaultCookiesPageContent.policySection.items[0].title,
+    );
+    expect(markup).toContain(
+      defaultCookiesPageContent.policySection.items[1].title,
+    );
     expect(markup).toContain('href="/privacy"');
     expect(markup).toContain('href="/terms"');
   });

@@ -194,7 +194,9 @@
 .markdown-content a.footnote-backref {
   display: inline-block;
   text-decoration: none;
-  transition: color 150ms ease, transform 150ms ease;
+  transition:
+    color 150ms ease,
+    transform 150ms ease;
 }
 
 .markdown-content a[data-footnote-backref]:hover,
@@ -250,7 +252,7 @@
   list-style: none;
 }
 
-.markdown-content li.task-list-item > input[type='checkbox'] {
+.markdown-content li.task-list-item > input[type="checkbox"] {
   appearance: none;
   background-color: var(--color-page-offset);
   background-image: none;
@@ -265,32 +267,32 @@
   width: 1.15em;
 }
 
-.markdown-content li.task-list-item > input[type='checkbox']::before {
+.markdown-content li.task-list-item > input[type="checkbox"]::before {
   border-bottom: 0.18em solid var(--color-content-inverse);
   border-right: 0.18em solid var(--color-content-inverse);
-  content: '';
+  content: "";
   height: 0.55em;
   opacity: 0;
   transform: rotate(45deg);
   width: 0.35em;
 }
 
-.markdown-content li.task-list-item > input[type='checkbox']:checked {
+.markdown-content li.task-list-item > input[type="checkbox"]:checked {
   background-color: var(--color-success);
   background-image: none;
   border-color: var(--color-success);
 }
 
-.markdown-content li.task-list-item > input[type='checkbox']:checked::before {
+.markdown-content li.task-list-item > input[type="checkbox"]:checked::before {
   opacity: 1;
 }
 
-.markdown-content li.task-list-item > input[type='checkbox']:disabled {
+.markdown-content li.task-list-item > input[type="checkbox"]:disabled {
   cursor: default;
   opacity: 1;
 }
 
-.markdown-content li.task-list-item > input[type='checkbox']:focus-visible {
+.markdown-content li.task-list-item > input[type="checkbox"]:focus-visible {
   outline: 2px solid var(--color-spotlight);
   outline-offset: 2px;
 }

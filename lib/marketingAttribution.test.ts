@@ -37,14 +37,17 @@ describe("marketing attribution", () => {
 
     expect(attribution).toMatchObject({
       gclid: "test-click-id",
-      landing_path: "/pricing?utm_source=newsletter&utm_medium=email&utm_campaign=launch&gclid=test-click-id",
+      landing_path:
+        "/pricing?utm_source=newsletter&utm_medium=email&utm_campaign=launch&gclid=test-click-id",
       referrer: "https://example.com/articles/digest-engine",
       referrer_host: "example.com",
       utm_campaign: "launch",
       utm_medium: "email",
       utm_source: "newsletter",
     });
-    expect(sessionStorage.getItem(MARKETING_ATTRIBUTION_STORAGE_KEY)).not.toBeNull();
+    expect(
+      sessionStorage.getItem(MARKETING_ATTRIBUTION_STORAGE_KEY),
+    ).not.toBeNull();
   });
 
   it("captures an external referrer when no campaign parameters are present", () => {
@@ -61,7 +64,9 @@ describe("marketing attribution", () => {
   });
 
   it("preserves previously captured attribution on internal signup navigation", () => {
-    setLocation("/?utm_source=linkedin&utm_medium=social&utm_campaign=q2-launch");
+    setLocation(
+      "/?utm_source=linkedin&utm_medium=social&utm_campaign=q2-launch",
+    );
     setReferrer("https://linkedin.com/feed");
     captureMarketingAttribution();
 
@@ -71,7 +76,8 @@ describe("marketing attribution", () => {
     const attribution = captureMarketingAttribution();
 
     expect(attribution).toMatchObject({
-      landing_path: "/?utm_source=linkedin&utm_medium=social&utm_campaign=q2-launch",
+      landing_path:
+        "/?utm_source=linkedin&utm_medium=social&utm_campaign=q2-launch",
       referrer_host: "linkedin.com",
       utm_campaign: "q2-launch",
       utm_medium: "social",

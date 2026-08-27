@@ -45,14 +45,14 @@ The graph runs through seven nodes: `trigger.validate → workload.resolve → f
 
 ### Agentic Requirements
 
-| Capability | Module | State |
-|---|---|---|
-| LLM routing & model registry | `plugin-ai-core-backend-module-llm-openai` or `llm-openrouter` | Required; `ai.agents.kubernetesAiResponder.model` references a registered model ID |
-| Kubernetes diagnostics | `plugin-ai-core-backend-module-kubernetes` — `KubernetesDiagnosticsDriver` and `kubernetes.*` tools | Required for all investigation evidence; without a functional K8s driver, every run produces `insufficient_evidence` |
-| Incident management (future) | `plugin-ai-core-backend-module-incident-management` — `incident.*` tools | Not yet integrated; webhook triggers carry incident context in the trigger payload itself |
-| Observability (future) | `plugin-ai-core-backend-module-observability` — `observability.*` tools | Not yet integrated; evidence bundle is K8s-only in v1 |
-| VCS (future) | `plugin-ai-core-backend-module-vcs` — `vcs.*` tools | Not yet integrated; recent change context is not gathered |
-| Runtime store | `plugin-ai-core-backend-module-runtime-store` | Required for run/artifact persistence |
+| Capability                   | Module                                                                                              | State                                                                                                                |
+| ---------------------------- | --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| LLM routing & model registry | `plugin-ai-core-backend-module-llm-openai` or `llm-openrouter`                                      | Required; `ai.agents.kubernetesAiResponder.model` references a registered model ID                                   |
+| Kubernetes diagnostics       | `plugin-ai-core-backend-module-kubernetes` — `KubernetesDiagnosticsDriver` and `kubernetes.*` tools | Required for all investigation evidence; without a functional K8s driver, every run produces `insufficient_evidence` |
+| Incident management (future) | `plugin-ai-core-backend-module-incident-management` — `incident.*` tools                            | Not yet integrated; webhook triggers carry incident context in the trigger payload itself                            |
+| Observability (future)       | `plugin-ai-core-backend-module-observability` — `observability.*` tools                             | Not yet integrated; evidence bundle is K8s-only in v1                                                                |
+| VCS (future)                 | `plugin-ai-core-backend-module-vcs` — `vcs.*` tools                                                 | Not yet integrated; recent change context is not gathered                                                            |
+| Runtime store                | `plugin-ai-core-backend-module-runtime-store`                                                       | Required for run/artifact persistence                                                                                |
 
 #### Trigger Sources
 
@@ -84,7 +84,7 @@ In `packages/backend/package.json`:
 In `packages/backend/src/index.ts`, add alongside other `@webstackbuilders` module loads:
 
 ```ts
-import { kubernetesAiResponderModule } from '@webstackbuilders/plugin-ai-agent-backend-kubernetes-ai-responder';
+import { kubernetesAiResponderModule } from "@webstackbuilders/plugin-ai-agent-backend-kubernetes-ai-responder";
 
 // Inside your backend builder:
 backend.add(kubernetesAiResponderModule);
@@ -128,7 +128,7 @@ In `packages/app/package.json`:
 In `packages/app/src/App.tsx`, import the alpha entry point:
 
 ```ts
-import kubernetesAiResponderExtensions from '@webstackbuilders/plugin-ai-agent-frontend-kubernetes-ai-responder/alpha';
+import kubernetesAiResponderExtensions from "@webstackbuilders/plugin-ai-agent-frontend-kubernetes-ai-responder/alpha";
 
 const app = createApp({
   features: [
@@ -161,10 +161,10 @@ ai:
 
       # --- optional, with defaults ---
 
-      maxEvidenceItems: 20         # Max evidence items retained in the report timeline
-      maxLogBytes: 16384            # Max bytes per container log excerpt (16 KB)
-      lookbackMinutes: 30           # Minutes of context gathered before the trigger time
-      maxToolInvocations: 12        # Hard cap on tool invocations per investigation run
+      maxEvidenceItems: 20 # Max evidence items retained in the report timeline
+      maxLogBytes: 16384 # Max bytes per container log excerpt (16 KB)
+      lookbackMinutes: 30 # Minutes of context gathered before the trigger time
+      maxToolInvocations: 12 # Hard cap on tool invocations per investigation run
 ```
 
 ### RBAC & Permissions
@@ -225,16 +225,22 @@ An investigation is triggered by `POST agents/kubernetes-ai-responder/runs` with
 ```ts
 type KubernetesIncidentTrigger = {
   version: 1;
-  source: 'alertmanager' | 'datadog' | 'pagerduty' | 'prometheus' | 'manual' | 'scheduler';
-  occurredAt: string;         // ISO 8601, normalized to UTC
-  entityRef?: string;          // Catalog entity reference — alternative to explicit coords
+  source:
+    | "alertmanager"
+    | "datadog"
+    | "pagerduty"
+    | "prometheus"
+    | "manual"
+    | "scheduler";
+  occurredAt: string; // ISO 8601, normalized to UTC
+  entityRef?: string; // Catalog entity reference — alternative to explicit coords
   cluster?: string;
   namespace?: string;
   workload?: string;
   pod?: string;
   alertId?: string;
   severity?: string;
-  summary: string;             // Human-readable incident description
+  summary: string; // Human-readable incident description
   labels?: Record<string, string>;
 };
 ```
@@ -245,25 +251,25 @@ At minimum, either `entityRef` or explicit workload coordinates (`cluster` + `na
 
 The graph runs a seven-node pipeline. Evidence collection in the `evidence.collect` node is gated by the failure class detected in `failure.classify`:
 
-| Node | Source | Behaviour |
-|---|---|---|
-| **trigger.validate** | `normalizeAlert.ts` | Parses the JSON payload, validates version (`version: 1`), normalizes `occurredAt` to UTC, and ensures either an `entityRef` or workload coordinates are present |
-| **workload.resolve** | `IncidentTriageGraph.ts` | Resolves the workload target: if `entityRef` is provided, calls `kubernetes.workload.resolve`; otherwise uses explicit coordinates. Fetches the workload snapshot via `kubernetes.workload.get_snapshot` and pod snapshots via `kubernetes.pod.get_snapshot` for every pod |
-| **failure.classify** | `routing.ts` | Classifies the workload snapshot into one of 5 failure classes deterministically: checks container termination reasons (`OOMKilled`, image-pull reasons, crash-loop reasons), rollout conditions (`ProgressDeadlineExceeded`), and container restart counts (>=5 triggers crash-loop). Falls back to `unknown` when no pattern matches |
-| **evidence.collect** | `IncidentTriageGraph.ts` | Invokes the failure-class-specific evidence plan (see table below), gathering previous-container logs, workload events, and/or timeline data within the incident time window |
-| **evidence.normalize** | `evidence.ts` | Redacts sensitive text, deduplicates by ID (first occurrence wins), sorts by `observedAt` timestamp, and caps to `maxEvidenceItems` |
-| **synthesize** | `report.ts` | Builds a prompt from the incident summary + failure class + normalized evidence bundle, invokes the model, extracts JSON from the response, validates every likely cause against the evidence ID set, and falls back to deterministic failure-class causes if validation fails |
-| **report.finalize** | `report.ts` | Assembles the final `IncidentTriageReport` artifact with status (`investigated`, `insufficient_evidence`, or `failed`), failure class, trigger payload, likely causes with cited evidence, timeline, next steps, and limitations |
+| Node                   | Source                   | Behaviour                                                                                                                                                                                                                                                                                                                              |
+| ---------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **trigger.validate**   | `normalizeAlert.ts`      | Parses the JSON payload, validates version (`version: 1`), normalizes `occurredAt` to UTC, and ensures either an `entityRef` or workload coordinates are present                                                                                                                                                                       |
+| **workload.resolve**   | `IncidentTriageGraph.ts` | Resolves the workload target: if `entityRef` is provided, calls `kubernetes.workload.resolve`; otherwise uses explicit coordinates. Fetches the workload snapshot via `kubernetes.workload.get_snapshot` and pod snapshots via `kubernetes.pod.get_snapshot` for every pod                                                             |
+| **failure.classify**   | `routing.ts`             | Classifies the workload snapshot into one of 5 failure classes deterministically: checks container termination reasons (`OOMKilled`, image-pull reasons, crash-loop reasons), rollout conditions (`ProgressDeadlineExceeded`), and container restart counts (>=5 triggers crash-loop). Falls back to `unknown` when no pattern matches |
+| **evidence.collect**   | `IncidentTriageGraph.ts` | Invokes the failure-class-specific evidence plan (see table below), gathering previous-container logs, workload events, and/or timeline data within the incident time window                                                                                                                                                           |
+| **evidence.normalize** | `evidence.ts`            | Redacts sensitive text, deduplicates by ID (first occurrence wins), sorts by `observedAt` timestamp, and caps to `maxEvidenceItems`                                                                                                                                                                                                    |
+| **synthesize**         | `report.ts`              | Builds a prompt from the incident summary + failure class + normalized evidence bundle, invokes the model, extracts JSON from the response, validates every likely cause against the evidence ID set, and falls back to deterministic failure-class causes if validation fails                                                         |
+| **report.finalize**    | `report.ts`              | Assembles the final `IncidentTriageReport` artifact with status (`investigated`, `insufficient_evidence`, or `failed`), failure class, trigger payload, likely causes with cited evidence, timeline, next steps, and limitations                                                                                                       |
 
 #### Per-Failure Evidence Plans
 
-| Failure Class | Detection | Logs | Events | Timeline |
-|---|---|---|---|---|
-| **oom-killed** | Container termination reason `OOMKilled` | ✅ Previous container logs | ✅ Workload events | — |
-| **image-pull** | `ImagePullBackOff`, `ErrImagePull`, or `InvalidImageName` | — | ✅ Workload events | ✅ Deployment timeline |
-| **crash-loop** | `CrashLoopBackOff` or restart count >= 5 | ✅ Previous container logs | ✅ Workload events | — |
-| **rollout-exceeded** | Condition `ProgressDeadlineExceeded` | — | ✅ Workload events | ✅ Deployment timeline |
-| **unknown** | No recognized failure pattern | — | ✅ Workload events | — |
+| Failure Class        | Detection                                                 | Logs                       | Events             | Timeline               |
+| -------------------- | --------------------------------------------------------- | -------------------------- | ------------------ | ---------------------- |
+| **oom-killed**       | Container termination reason `OOMKilled`                  | ✅ Previous container logs | ✅ Workload events | —                      |
+| **image-pull**       | `ImagePullBackOff`, `ErrImagePull`, or `InvalidImageName` | —                          | ✅ Workload events | ✅ Deployment timeline |
+| **crash-loop**       | `CrashLoopBackOff` or restart count >= 5                  | ✅ Previous container logs | ✅ Workload events | —                      |
+| **rollout-exceeded** | Condition `ProgressDeadlineExceeded`                      | —                          | ✅ Workload events | ✅ Deployment timeline |
+| **unknown**          | No recognized failure pattern                             | —                          | ✅ Workload events | —                      |
 
 ### Evidence Collection & Budget
 
@@ -295,6 +301,7 @@ evidence IDs for every claim, and never propose unapproved mutations.
 ```
 
 The full synthesis prompt includes:
+
 - The agent's system prompt
 - The incident summary from the trigger payload
 - The entity reference, when available
@@ -306,6 +313,7 @@ The full synthesis prompt includes:
 #### Sensitive Text Redaction
 
 All evidence summaries and model output pass through `redactSensitiveText()` before entering the model prompt or appearing in any artifact, SSE event, log, or test snapshot. The redaction engine strips:
+
 - Bearer tokens
 - `password|secret|token|api_key|access_key|authorization|credential=...` patterns
 - AWS access key IDs (`AKIA`/`ASIA` prefixes)
@@ -326,15 +334,15 @@ Both surfaces deep-link to current runs via `?run=<id>` and pre-fill the trigger
 
 ### Frontend Components
 
-| Component | Role |
-|---|---|
-| `IncidentTriagePage` | Standalone page orchestrating the full investigation lifecycle — trigger, live progress, evidence, and report |
+| Component               | Role                                                                                                                                                                 |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `IncidentTriagePage`    | Standalone page orchestrating the full investigation lifecycle — trigger, live progress, evidence, and report                                                        |
 | `TriggerIncidentDialog` | Form accepting either a catalog `entityRef` or explicit workload coordinates (`cluster` + `namespace` + `workload`), with optional pod, severity, and summary fields |
-| `RunTimeline` | Live graph-node transitions and bounded tool-call activity, streamed over SSE and rendered in real time |
-| `EvidencePanel` | Labeled observed data showing bounded, redacted evidence summaries per source/kind, sorted by observation time |
-| `ReportPanel` | Likely causes labeled as model inference, each citing evidence IDs; recommended next steps; and limitations |
-| `RunStatusBanner` | Live `role="status"` / `aria-live` banner updating as the run transitions through phases |
-| `IncidentActionButton` | Catalog entity context action linking to the triage page with the entity reference pre-filled |
+| `RunTimeline`           | Live graph-node transitions and bounded tool-call activity, streamed over SSE and rendered in real time                                                              |
+| `EvidencePanel`         | Labeled observed data showing bounded, redacted evidence summaries per source/kind, sorted by observation time                                                       |
+| `ReportPanel`           | Likely causes labeled as model inference, each citing evidence IDs; recommended next steps; and limitations                                                          |
+| `RunStatusBanner`       | Live `role="status"` / `aria-live` banner updating as the run transitions through phases                                                                             |
+| `IncidentActionButton`  | Catalog entity context action linking to the triage page with the entity reference pre-filled                                                                        |
 
 ### Human-in-the-Loop Actions
 
@@ -353,6 +361,7 @@ The page streams live SSE events: graph nodes enter/exit, per-failure-class tool
 #### Reading the triage report
 
 The `ReportPanel` renders:
+
 - **Failure class** — the deterministic signature that routed the investigation (e.g., `oom-killed`)
 - **Likely causes** — model-authored analysis, each labeled **model inference** and citing specific evidence IDs with confidence scores
 - **Recommended next steps** — actionable guidance (no mutations proposed)
@@ -394,6 +403,7 @@ ai:
 **Run terminates with `insufficient_evidence` on every investigation**
 
 No Kubernetes workload could be resolved. Check that:
+
 - Either a valid `entityRef` or explicit workload coordinates (`cluster` + `namespace` + `workload`) are provided
 - The entity has `backstage.io/kubernetes-id` annotation set if using `entityRef`
 - The `plugin-ai-core-backend-module-kubernetes` module is installed and configured

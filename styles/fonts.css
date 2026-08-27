@@ -10,52 +10,31 @@
  */
 @theme {
   --font-heading:
-    "Outfit Variable",
-    "Outfit Variable Fallback: Helvetica Neue",
-    "Outfit Variable Fallback: Arial",
-    "Outfit Variable Fallback: Segoe UI",
-    "Outfit Variable Fallback: Roboto",
-    "Helvetica Neue",
-    Arial,
-    "Segoe UI",
-    Roboto,
-    sans-serif;
+    "Outfit Variable", "Outfit Variable Fallback: Helvetica Neue",
+    "Outfit Variable Fallback: Arial", "Outfit Variable Fallback: Segoe UI",
+    "Outfit Variable Fallback: Roboto", "Helvetica Neue", Arial, "Segoe UI",
+    Roboto, sans-serif;
   --font-sans:
-    "Public Sans Variable",
-    "Public Sans Variable Fallback: Helvetica Neue",
+    "Public Sans Variable", "Public Sans Variable Fallback: Helvetica Neue",
     "Public Sans Variable Fallback: Arial",
     "Public Sans Variable Fallback: Segoe UI",
-    "Public Sans Variable Fallback: Roboto",
-    "Helvetica Neue",
-    Arial,
-    "Segoe UI",
-    Roboto,
-    sans-serif;
+    "Public Sans Variable Fallback: Roboto", "Helvetica Neue", Arial,
+    "Segoe UI", Roboto, sans-serif;
   --font-serif:
-    "Outfit Variable",
-    "Outfit Variable Fallback: Helvetica Neue",
-    "Outfit Variable Fallback: Arial",
-    "Outfit Variable Fallback: Segoe UI",
-    "Outfit Variable Fallback: Roboto",
-    "Helvetica Neue",
-    Arial,
-    "Segoe UI",
-    Roboto,
-    sans-serif;
+    "Outfit Variable", "Outfit Variable Fallback: Helvetica Neue",
+    "Outfit Variable Fallback: Arial", "Outfit Variable Fallback: Segoe UI",
+    "Outfit Variable Fallback: Roboto", "Helvetica Neue", Arial, "Segoe UI",
+    Roboto, sans-serif;
   --font-mono:
-    "JetBrains Mono Variable",
-    "JetBrains Mono Variable Fallback: Roboto Mono",
+    "JetBrains Mono Variable", "JetBrains Mono Variable Fallback: Roboto Mono",
     "JetBrains Mono Variable Fallback: Noto Sans Mono",
-    "JetBrains Mono Variable Fallback: Courier New",
-    "Roboto Mono",
-    "Noto Sans Mono",
-    "Courier New",
-    monospace;
+    "JetBrains Mono Variable Fallback: Courier New", "Roboto Mono",
+    "Noto Sans Mono", "Courier New", monospace;
 }
 
 @font-face {
   font-family: "Outfit Variable Fallback: Helvetica Neue";
-  src: local('Helvetica Neue'), local('HelveticaNeue');
+  src: local("Helvetica Neue"), local("HelveticaNeue");
   font-weight: 100 699;
   font-style: normal;
   ascent-override: 78.3972%;
@@ -66,7 +45,7 @@
 
 @font-face {
   font-family: "Outfit Variable Fallback: Arial";
-  src: local('Arial'), local('ArialMT');
+  src: local("Arial"), local("ArialMT");
   font-weight: 100 699;
   font-style: normal;
   ascent-override: 77.6656%;
@@ -77,7 +56,7 @@
 
 @font-face {
   font-family: "Outfit Variable Fallback: Segoe UI";
-  src: local('Segoe UI'), local('SegoeUI');
+  src: local("Segoe UI"), local("SegoeUI");
   font-weight: 100 699;
   font-style: normal;
   ascent-override: 77.2403%;
@@ -87,7 +66,7 @@
 
 @font-face {
   font-family: "Outfit Variable Fallback: Roboto";
-  src: local('Roboto Regular'), local('Roboto-Regular');
+  src: local("Roboto Regular"), local("Roboto-Regular");
   font-weight: 100 699;
   font-style: normal;
   ascent-override: 77.4955%;
@@ -97,7 +76,7 @@
 
 @font-face {
   font-family: "Outfit Variable Fallback: Helvetica Neue";
-  src: local('Helvetica Neue Bold'), local('HelveticaNeue-Bold');
+  src: local("Helvetica Neue Bold"), local("HelveticaNeue-Bold");
   font-weight: 700 900;
   font-style: normal;
   ascent-override: 80.402%;
@@ -108,7 +87,7 @@
 
 @font-face {
   font-family: "Outfit Variable Fallback: Arial";
-  src: local('Arial Bold'), local('Arial-BoldMT');
+  src: local("Arial Bold"), local("Arial-BoldMT");
   font-weight: 700 900;
   font-style: normal;
   ascent-override: 80.3987%;
@@ -119,7 +98,7 @@
 
 @font-face {
   font-family: "Outfit Variable Fallback: Segoe UI";
-  src: local('Segoe UI Bold'), local('SegoeUI-Bold');
+  src: local("Segoe UI Bold"), local("SegoeUI-Bold");
   font-weight: 700 900;
   font-style: normal;
   ascent-override: 79.5808%;
@@ -129,7 +108,7 @@
 
 @font-face {
   font-family: "Outfit Variable Fallback: Roboto";
-  src: local('Roboto Bold'), local('Roboto-Bold');
+  src: local("Roboto Bold"), local("Roboto-Bold");
   font-weight: 700 900;
   font-style: normal;
   ascent-override: 75.7368%;
@@ -139,7 +118,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Helvetica Neue";
-  src: local('Helvetica Neue'), local('HelveticaNeue');
+  src: local("Helvetica Neue"), local("HelveticaNeue");
   font-weight: 100 599;
   font-style: normal;
   ascent-override: 75.1979%;
@@ -150,7 +129,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Arial";
-  src: local('Arial'), local('ArialMT');
+  src: local("Arial"), local("ArialMT");
   font-weight: 100 599;
   font-style: normal;
   ascent-override: 74.4962%;
@@ -161,7 +140,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Segoe UI";
-  src: local('Segoe UI'), local('SegoeUI');
+  src: local("Segoe UI"), local("SegoeUI");
   font-weight: 100 599;
   font-style: normal;
   ascent-override: 74.0882%;
@@ -171,7 +150,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Roboto";
-  src: local('Roboto Regular'), local('Roboto-Regular');
+  src: local("Roboto Regular"), local("Roboto-Regular");
   font-weight: 100 599;
   font-style: normal;
   descent-override: 17.6052%;
@@ -180,7 +159,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Helvetica Neue";
-  src: local('Helvetica Neue Italic'), local('HelveticaNeue-Italic');
+  src: local("Helvetica Neue Italic"), local("HelveticaNeue-Italic");
   font-weight: 100 599;
   font-style: italic;
   ascent-override: 82.5606%;
@@ -191,7 +170,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Arial";
-  src: local('Arial Italic'), local('Arial-ItalicMT');
+  src: local("Arial Italic"), local("Arial-ItalicMT");
   font-weight: 100 599;
   font-style: italic;
   ascent-override: 82.1553%;
@@ -202,7 +181,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Segoe UI";
-  src: local('Segoe UI Italic'), local('SegoeUI-Italic');
+  src: local("Segoe UI Italic"), local("SegoeUI-Italic");
   font-weight: 100 599;
   font-style: italic;
   ascent-override: 79.9057%;
@@ -212,7 +191,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Roboto";
-  src: local('Roboto Italic'), local('Roboto-Italic');
+  src: local("Roboto Italic"), local("Roboto-Italic");
   font-weight: 100 599;
   font-style: italic;
   descent-override: 18.8824%;
@@ -221,7 +200,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Helvetica Neue";
-  src: local('Helvetica Neue Bold'), local('HelveticaNeue-Bold');
+  src: local("Helvetica Neue Bold"), local("HelveticaNeue-Bold");
   font-weight: 600 900;
   font-style: normal;
   ascent-override: 76.8971%;
@@ -232,7 +211,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Arial";
-  src: local('Arial Bold'), local('Arial-BoldMT');
+  src: local("Arial Bold"), local("Arial-BoldMT");
   font-weight: 600 900;
   font-style: normal;
   ascent-override: 76.894%;
@@ -243,7 +222,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Segoe UI";
-  src: local('Segoe UI Bold'), local('SegoeUI-Bold');
+  src: local("Segoe UI Bold"), local("SegoeUI-Bold");
   font-weight: 600 900;
   font-style: normal;
   ascent-override: 76.1118%;
@@ -253,7 +232,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Roboto";
-  src: local('Roboto Bold'), local('Roboto-Bold');
+  src: local("Roboto Bold"), local("Roboto-Bold");
   font-weight: 600 900;
   font-style: normal;
   descent-override: 17.1557%;
@@ -262,7 +241,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Helvetica Neue";
-  src: local('Helvetica Neue Bold Italic'), local('HelveticaNeue-BoldItalic');
+  src: local("Helvetica Neue Bold Italic"), local("HelveticaNeue-BoldItalic");
   font-weight: 600 900;
   font-style: italic;
   ascent-override: 84.8561%;
@@ -273,7 +252,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Arial";
-  src: local('Arial Bold Italic'), local('Arial-BoldItalicMT');
+  src: local("Arial Bold Italic"), local("Arial-BoldItalicMT");
   font-weight: 600 900;
   font-style: italic;
   ascent-override: 84.6762%;
@@ -284,7 +263,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Segoe UI";
-  src: local('Segoe UI Bold Italic'), local('SegoeUI-BoldItalic');
+  src: local("Segoe UI Bold Italic"), local("SegoeUI-BoldItalic");
   font-weight: 600 900;
   font-style: italic;
   ascent-override: 83.4703%;
@@ -294,7 +273,7 @@
 
 @font-face {
   font-family: "Public Sans Variable Fallback: Roboto";
-  src: local('Roboto Bold Italic'), local('Roboto-BoldItalic');
+  src: local("Roboto Bold Italic"), local("Roboto-BoldItalic");
   font-weight: 600 900;
   font-style: italic;
   descent-override: 18.3616%;
@@ -303,7 +282,7 @@
 
 @font-face {
   font-family: "JetBrains Mono Variable Fallback: Roboto Mono";
-  src: local('Roboto Mono Regular'), local('RobotoMono-Regular');
+  src: local("Roboto Mono Regular"), local("RobotoMono-Regular");
   font-weight: 100 599;
   font-style: normal;
   ascent-override: 101.6777%;
@@ -313,7 +292,7 @@
 
 @font-face {
   font-family: "JetBrains Mono Variable Fallback: Noto Sans Mono";
-  src: local('Noto Sans Mono Regular'), local('NotoSansMono-Regular');
+  src: local("Noto Sans Mono Regular"), local("NotoSansMono-Regular");
   font-weight: 100 599;
   font-style: normal;
   ascent-override: 101.6611%;
@@ -323,7 +302,7 @@
 
 @font-face {
   font-family: "JetBrains Mono Variable Fallback: Courier New";
-  src: local('Courier New'), local('CourierNewPSMT');
+  src: local("Courier New"), local("CourierNewPSMT");
   font-weight: 100 599;
   font-style: normal;
   ascent-override: 101.6777%;
@@ -333,7 +312,7 @@
 
 @font-face {
   font-family: "JetBrains Mono Variable Fallback: Roboto Mono";
-  src: local('Roboto Mono Italic'), local('RobotoMono-Italic');
+  src: local("Roboto Mono Italic"), local("RobotoMono-Italic");
   font-weight: 100 599;
   font-style: italic;
   ascent-override: 99.4439%;
@@ -343,7 +322,7 @@
 
 @font-face {
   font-family: "JetBrains Mono Variable Fallback: Noto Sans Mono";
-  src: local('Noto Sans Mono Regular'), local('NotoSansMono-Regular');
+  src: local("Noto Sans Mono Regular"), local("NotoSansMono-Regular");
   font-weight: 100 599;
   font-style: italic;
   ascent-override: 101.6611%;
@@ -353,7 +332,7 @@
 
 @font-face {
   font-family: "JetBrains Mono Variable Fallback: Courier New";
-  src: local('Courier New Italic'), local('CourierNewPS-ItalicMT');
+  src: local("Courier New Italic"), local("CourierNewPS-ItalicMT");
   font-weight: 100 599;
   font-style: italic;
   ascent-override: 101.6777%;
@@ -363,7 +342,7 @@
 
 @font-face {
   font-family: "JetBrains Mono Variable Fallback: Roboto Mono";
-  src: local('Roboto Mono Bold'), local('RobotoMono-Bold');
+  src: local("Roboto Mono Bold"), local("RobotoMono-Bold");
   font-weight: 600 800;
   font-style: normal;
   ascent-override: 101.6777%;
@@ -373,7 +352,7 @@
 
 @font-face {
   font-family: "JetBrains Mono Variable Fallback: Noto Sans Mono";
-  src: local('Noto Sans Mono Bold'), local('NotoSansMono-Bold');
+  src: local("Noto Sans Mono Bold"), local("NotoSansMono-Bold");
   font-weight: 600 800;
   font-style: normal;
   ascent-override: 101.6611%;
@@ -383,7 +362,7 @@
 
 @font-face {
   font-family: "JetBrains Mono Variable Fallback: Courier New";
-  src: local('Courier New Bold'), local('CourierNewPS-BoldMT');
+  src: local("Courier New Bold"), local("CourierNewPS-BoldMT");
   font-weight: 600 800;
   font-style: normal;
   ascent-override: 101.6777%;
@@ -393,7 +372,7 @@
 
 @font-face {
   font-family: "JetBrains Mono Variable Fallback: Roboto Mono";
-  src: local('Roboto Mono Bold Italic'), local('RobotoMono-BoldItalic');
+  src: local("Roboto Mono Bold Italic"), local("RobotoMono-BoldItalic");
   font-weight: 600 800;
   font-style: italic;
   ascent-override: 99.4439%;
@@ -403,7 +382,7 @@
 
 @font-face {
   font-family: "JetBrains Mono Variable Fallback: Noto Sans Mono";
-  src: local('Noto Sans Mono Regular'), local('NotoSansMono-Regular');
+  src: local("Noto Sans Mono Regular"), local("NotoSansMono-Regular");
   font-weight: 600 800;
   font-style: italic;
   ascent-override: 101.6611%;
@@ -413,7 +392,7 @@
 
 @font-face {
   font-family: "JetBrains Mono Variable Fallback: Courier New";
-  src: local('Courier New Bold Italic'), local('CourierNewPS-BoldItalicMT');
+  src: local("Courier New Bold Italic"), local("CourierNewPS-BoldItalicMT");
   font-weight: 600 800;
   font-style: italic;
   ascent-override: 101.6777%;

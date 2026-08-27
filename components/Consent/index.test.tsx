@@ -8,7 +8,9 @@ import { defaultConsentComponentContent } from "@/lib/consentDefaults";
 
 import { CONSENT_STORAGE_KEY, Consent } from "./index";
 
-(globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+(
+  globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+).IS_REACT_ACT_ENVIRONMENT = true;
 
 let root: Root | null = null;
 let container: HTMLDivElement | null = null;
@@ -40,8 +42,12 @@ describe("Consent", () => {
 
     expect(dialog).not.toBeNull();
     expect(dialog?.getAttribute("aria-modal")).toBeNull();
-    expect(container.textContent).toContain(defaultConsentComponentContent.badge);
-    expect(container.textContent).toContain(defaultConsentComponentContent.acceptAllButtonText);
+    expect(container.textContent).toContain(
+      defaultConsentComponentContent.badge,
+    );
+    expect(container.textContent).toContain(
+      defaultConsentComponentContent.acceptAllButtonText,
+    );
     expect(
       container.querySelector('[aria-label="Dismiss cookie preferences"]'),
     ).not.toBeNull();
@@ -77,8 +83,11 @@ describe("Consent", () => {
       root?.render(<Consent content={defaultConsentComponentContent} />);
     });
 
-    const acceptButton = Array.from(container.querySelectorAll("button")).find((button) =>
-      button.textContent?.includes(defaultConsentComponentContent.acceptAllButtonText),
+    const acceptButton = Array.from(container.querySelectorAll("button")).find(
+      (button) =>
+        button.textContent?.includes(
+          defaultConsentComponentContent.acceptAllButtonText,
+        ),
     );
 
     await act(async () => {
@@ -100,12 +109,18 @@ describe("Consent", () => {
       root?.render(<Consent content={defaultConsentComponentContent} />);
     });
 
-    const essentialOnlyButton = Array.from(container.querySelectorAll("button")).find((button) =>
-      button.textContent?.includes(defaultConsentComponentContent.essentialOnlyButtonText),
+    const essentialOnlyButton = Array.from(
+      container.querySelectorAll("button"),
+    ).find((button) =>
+      button.textContent?.includes(
+        defaultConsentComponentContent.essentialOnlyButtonText,
+      ),
     );
 
     await act(async () => {
-      essentialOnlyButton?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      essentialOnlyButton?.dispatchEvent(
+        new MouseEvent("click", { bubbles: true }),
+      );
     });
 
     expect(localStorage.getItem(CONSENT_STORAGE_KEY)).toBe(

@@ -57,7 +57,9 @@ export const CTA = ({
                 key={highlight.step}
                 className={[
                   "rounded-3xl border border-trim-offset px-5 py-5",
-                  index === 1 ? "bg-secondary/20 lg:translate-x-6" : "bg-page-offset",
+                  index === 1
+                    ? "bg-secondary/20 lg:translate-x-6"
+                    : "bg-page-offset",
                   index === 2 ? "lg:-translate-x-4" : "",
                 ].join(" ")}
               >

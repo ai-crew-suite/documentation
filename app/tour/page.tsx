@@ -84,9 +84,17 @@ export default function TourPage() {
             </p>
             <div className="mt-5 space-y-4">
               {content.highlightsSection.items.map((item) => (
-                <div key={item.text} className="flex gap-3 rounded-3xl border border-trim-offset bg-page-offset p-4">
-                  <CheckCircle2 className="mt-0.5 h-7 w-7 shrink-0 text-secondary" aria-hidden="true" />
-                  <p className="text-base leading-7 text-content-active">{item.text}</p>
+                <div
+                  key={item.text}
+                  className="flex gap-3 rounded-3xl border border-trim-offset bg-page-offset p-4"
+                >
+                  <CheckCircle2
+                    className="mt-0.5 h-7 w-7 shrink-0 text-secondary"
+                    aria-hidden="true"
+                  />
+                  <p className="text-base leading-7 text-content-active">
+                    {item.text}
+                  </p>
                 </div>
               ))}
             </div>
@@ -115,12 +123,16 @@ export default function TourPage() {
                 className="rounded-3xl border border-trim-offset bg-page-base p-6 shadow-card"
               >
                 <div className="flex gap-6">
-                  <span className="mt-2 text-3xl font-semibold text-secondary">0{index + 1}</span>
+                  <span className="mt-2 text-3xl font-semibold text-secondary">
+                    0{index + 1}
+                  </span>
                   <h3 className="text-xl font-semibold tracking-tight text-secondary">
                     {step.title}
                   </h3>
                 </div>
-                <p className="mt-3 text-base leading-7 text-content-offset">{step.description}</p>
+                <p className="mt-3 text-base leading-7 text-content-offset">
+                  {step.description}
+                </p>
               </article>
             );
           })}

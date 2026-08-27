@@ -92,12 +92,28 @@ describe("GlobalError", () => {
 
     expect(sentryMocks.captureException).toHaveBeenCalledWith(error);
     expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
-    expect(screen.getByAltText("AI Crew Suite error illustration")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Return home" })).toHaveAttribute("href", "/");
-    expect(screen.getByRole("link", { name: /How It Works/i })).toHaveAttribute("href", "/tour");
-    expect(screen.getByRole("link", { name: /^Docs/i })).toHaveAttribute("href", "/docs");
-    expect(screen.getByRole("link", { name: /^Sign Up/i })).toHaveAttribute("href", "/signup");
+    expect(
+      screen.getByAltText("AI Crew Suite error illustration"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Try again" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Return home" })).toHaveAttribute(
+      "href",
+      "/",
+    );
+    expect(screen.getByRole("link", { name: /How It Works/i })).toHaveAttribute(
+      "href",
+      "/tour",
+    );
+    expect(screen.getByRole("link", { name: /^Docs/i })).toHaveAttribute(
+      "href",
+      "/docs",
+    );
+    expect(screen.getByRole("link", { name: /^Sign Up/i })).toHaveAttribute(
+      "href",
+      "/signup",
+    );
   });
 
   it("retries when the user clicks the reset button", async () => {

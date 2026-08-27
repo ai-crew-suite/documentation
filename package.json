@@ -1,5 +1,5 @@
 {
-  "name": "@digestengine/marketing",
+  "name": "@ai-crew-suite/marketing",
   "version": "0.1.0",
   "private": true,
   "engines": {
@@ -16,10 +16,10 @@
     "format:check": "prettier --check .",
     "lint": "npm run lint:code && npm run lint:style",
     "lint:code": "eslint . --max-warnings=0",
-    "lint:style": "stylelint \"src/**/*.css\"",
+    "lint:style": "stylelint \"styles/**/*.css\"",
     "lint:fix": "npm run lint:code:fix && npm run lint:style:fix",
     "lint:code:fix": "eslint . --fix",
-    "lint:style:fix": "stylelint \"src/**/*.css\" --fix",
+    "lint:style:fix": "stylelint \"styles/**/*.css\" --fix",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "typecheck": "tsc --noEmit"

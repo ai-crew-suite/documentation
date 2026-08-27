@@ -28,7 +28,9 @@ export default async function PrivacyPage() {
             {content.hero.description}
           </p>
 
-          <p className="text-sm text-content-offset">{content.hero.effectiveDate}</p>
+          <p className="text-sm text-content-offset">
+            {content.hero.effectiveDate}
+          </p>
         </div>
       </PageSection>
 
@@ -39,7 +41,9 @@ export default async function PrivacyPage() {
               key={item.text}
               className="rounded-3xl border border-trim-offset bg-page-base p-6 shadow-card"
             >
-              <p className="text-base font-semibold tracking-tight text-content-active">{item.text}</p>
+              <p className="text-base font-semibold tracking-tight text-content-active">
+                {item.text}
+              </p>
             </div>
           ))}
         </div>
@@ -71,7 +75,9 @@ export default async function PrivacyPage() {
               >
                 {section.title}
               </h3>
-              <p className="mt-3 text-base leading-7 text-content-offset">{section.body}</p>
+              <p className="mt-3 text-base leading-7 text-content-offset">
+                {section.body}
+              </p>
             </section>
           ))}
         </div>
