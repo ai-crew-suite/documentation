@@ -23,12 +23,12 @@ describe("Blog catch-all page", () => {
       title:
         "Introducing AI Crew Suite: Eighteen agentic workflow plugins for Backstage",
       description:
-        "A deep dive into the architecture and philosophy behind our monorepo of agentic workflow plugins for Spotify's Backstage IDP.",
+        "A deep dive into the architecture and philosophy behind our monorepo of agentic workflow plugins for Spotify&#x27;s Backstage IDP.",
       publishedAt: "August 27, 2026",
       previewImage: "feature-01",
     },
     content:
-      "# Introducing AI Crew Suite\n\nToday we're excited to announce the release of **AI Crew Suite**...",
+      "# Introducing AI Crew Suite\n\nToday we&#x27;re excited to announce the release of **AI Crew Suite**...",
     headings: [
       {
         depth: 1,
