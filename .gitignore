@@ -18,3 +18,4 @@ storybook-static/
 **/out/
 *storybook.log
 *.tsbuildinfo
+.clinerules
