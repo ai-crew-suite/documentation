@@ -29,7 +29,9 @@ describe("Blog home page", () => {
     defaultBlogContentPages.forEach((post) => {
       expect(markup).toContain(post.title);
       if (post.description) {
-        expect(markup).toContain(post.description);
+        // React encodes apostrophes in static markup
+        const encodedDescription = post.description.replace(/'/g, "&#x27;");
+        expect(markup).toContain(encodedDescription);
       }
       expect(markup).toContain(`href="/blog/${post.slug.current}"`);
     });

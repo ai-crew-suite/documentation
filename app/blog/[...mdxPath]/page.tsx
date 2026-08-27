@@ -34,24 +34,24 @@ function isReactElementWithProps(value: unknown): value is ReactElementWithProps
 }
 
 interface HeadingProps extends ComponentProps<'h1'> {
-  node: ReactMarkdownNode;
-  children: React.ReactNode;
+  node?: ReactMarkdownNode;
+  children?: React.ReactNode;
 }
 
 interface LinkProps extends ComponentProps<'a'> {
-  node: ReactMarkdownNode;
+  node?: ReactMarkdownNode;
   href?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 interface CodeProps extends ComponentProps<'code'> {
-  node: ReactMarkdownNode;
+  node?: ReactMarkdownNode;
   inline?: boolean;
   className?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
-type ReactMarkdownChildren = string | React.ReactNode | React.ReactNode[];
+type ReactMarkdownChildren = string | React.ReactNode | React.ReactNode[] | undefined;
 
 function slugifyHeading(value: string): string {
   return value
@@ -93,6 +93,7 @@ function resolveBlogHref(currentSlug: string, href: string): string {
 }
 
 function childrenToString(children: ReactMarkdownChildren): string {
+  if (children === undefined || children === null) return "";
   if (typeof children === "string") return children;
   if (typeof children === "number") return children.toString();
   if (Array.isArray(children)) return children.map(childrenToString).join("");
