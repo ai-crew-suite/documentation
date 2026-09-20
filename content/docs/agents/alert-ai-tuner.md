@@ -12,25 +12,27 @@ subcategory: Operations
 
 <span class="label label-blue">{{ page.subcategory }}</span>
 
-The **Alert Fatigue Tuner** plugin provides an automated backend agent that statistically analyzes alert firing histories to identify noisy, self-clearing alert rule configurations and proposes reviewable Infrastructure-as-Code (IaC) threshold patches to them. By cross-referencing alerts against real incidents and deployments, it isolates false alarms and presents engineers with cited, low-risk optimization proposals.
+## Summary
 
-The system ensures security and predictability by keeping tuning decisions **arithmetic rather than inferential**. The core noise-scoring and patching engines are entirely deterministic pure modules, using the model strictly to author human-readable justification prose from pre-computed calculations it cannot alter.
+The Alert Fatigue Tuner is an AI Core backend agent that **statistically analyzes alert firing history to identify noisy, self-clearing alert definitions** and proposes bounded, reviewable Infrastructure-as-Code (IaC) threshold patches. It operates as a security-sensitive write-back workflow: an operator triggers an evaluation on a candidate alert, the plugin reads the alert's firing history, cross-references it against real incidents and deployments to rule out genuine signal, locates the owning IaC definition in the source repository, and computes a **deterministically capped** threshold and/or duration change. The result is a cited, anchored unified diff artifact that an engineer can review before any change is made to the infrastructure repository.
+
+The tuning decision itself is **arithmetic, not inferential**. The statistical noise engine (`workflow/noise.ts`) and the patch engine (`workflow/patch.ts`) are both pure, deterministic modules with no LLM, tool, or clock dependencies. The model is invoked only to author human-readable justification prose from pre-computed numbers it is forbidden to recompute.
 
 ## Key Features
 
-- **Deterministic Noise Scoring**: Calculates percentiles via a nearest-rank algorithm, ensuring brief, frequent self-clearing alerts are never masked by a single multi-hour outage.
-- **Incident & Deployment Correlation**: cross-references event timelines to automatically suppress tuning recommendations if a real incident overlapped the firing window.
-- **Surgical IaC Discovery**: Pinpoints Prometheus alert rules (YAML blocks) and Terraform resources with exact line numbers instead of relying on LLM guesses.
-- **Capped, Anchored Diffs**: Generates byte-for-byte unified diff patches that strictly preserve surrounding code indentation, spacing, quoting, and comments.
-- **Human Approval Gate Architecture**: Pauses scheduled weekly tuning sweeps at the proposal stage, ensuring no autonomous IaC writes occur without explicit human approval.
-- **Live SSE Run View**: Streams real-time execution progress alongside noise-evidence citations, threshold diff previews, and direct approve/reject controls.
+- **Deterministic noise scoring** via nearest-rank percentiles — a single multi-hour outage does not mask fifteen two-minute self-clears
+- **Incident and deployment correlation** that suppresses tuning when any real incident overlapped the firing window
+- **Surgical IaC discovery** that locates Prometheus alert rules (YAML `- alert:` blocks) and Terraform `resource` blocks with exact line numbers, never guessing
+- **Capped, anchored unified diffs** that preserve surrounding indentation, operator spacing, quoting, and trailing comments byte-for-byte
+- **Human approval gate architecture** — scheduled weekly sweeps stop at the proposal artifact; no autonomous IaC write occurs without an explicit human `approved` decision
+- **Live SSE run view** with noise-evidence citations, a threshold diff preview, and future approve/reject controls
 
 ## Architecture
 
 The plugin follows the standard two-package Backstage agent layout:
 
-- **Backend module** (`@webstackbuilders/plugin-ai-agent-backend-alert-ai-tuner`, `role: backend-plugin-module`, `pluginId: ai-core`) — registers the `AlertTunerGraph` workflow runner, the `alert-ai-tuner` agent definition with a read-only tool allow-list, manual and scheduler triggers, and an optional weekly noise sweep
-- **Frontend plugin** (`@webstackbuilders/plugin-ai-agent-frontend-alert-ai-tuner`, `role: frontend-plugin`, `pluginId: alert-ai-tuner`) — provides a standalone page at `/alert-ai-tuner` with a typed SSE API client, an evaluation dialog, live workflow progress, noise evidence panels, an anchored diff preview, and future approval/publication UI
+- **Backend module** (`@ai-crew-suite/agent-alert-tuner-backend`, `role: backend-plugin-module`, `pluginId: ai-core`) — registers the `AlertTunerGraph` workflow runner, the `alert-ai-tuner` agent definition with a read-only tool allow-list, manual and scheduler triggers, and an optional weekly noise sweep
+- **Frontend plugin** (`@ai-crew-suite/plugin-agent-alert-tuner-backend`, `role: frontend-plugin`, `pluginId: alert-ai-tuner`) — provides a standalone page at `/alert-ai-tuner` with a typed SSE API client, an evaluation dialog, live workflow progress, noise evidence panels, an anchored diff preview, and future approval/publication UI
 
 The graph runs as a custom `WorkflowRunner` at ID `alert-tuning`, executing a fixed pipeline: `observe → analyze → correlate → locate → patch → alert-tuning-proposal`. The proposal artifact carries the complete evidence bundle so the reviewer sees every cited `fire-N`, `inc-N`, and `iac-N` reference behind the recommendation.
 
@@ -38,20 +40,20 @@ The graph runs as a custom `WorkflowRunner` at ID `alert-tuning`, executing a fi
 
 ## Backstage Version
 
-- Requires a Backstage backend running the `ai-core` plugin and its extension-point system (`agentExtensionPoint`, `triggerExtensionPoint`, `workflowRunnerExtensionPoint` from `@webstackbuilders/plugin-ai-core-node`)
+- Requires a Backstage backend running the `ai-core` plugin and its extension-point system (`agentExtensionPoint`, `triggerExtensionPoint`, `workflowRunnerExtensionPoint` from `@ai-crew-suite/plugin-kernel-node`)
 
 ## Agentic Requirements
 
 All agentic dependencies are delivered through existing shared modules. The Alert Fatigue Tuner itself introduces **no new infrastructure**:
 
-| Capability                   | Module                                                                                                                   | State                                                                             |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
-| LLM routing & model registry | `plugin-ai-core-backend-module-llm-openai` or `llm-openrouter`                                                           | Required; `ai.agents.alertAiTuner.model` references a registered model ID         |
-| Incident alert history       | `plugin-ai-core-backend-module-incident-management` — `IncidentManagementDriver.getAlertHistory()`                       | Required for the `incident.alert.history` and `incident.incident.list` tool calls |
-| Observability metrics        | `plugin-ai-core-backend-module-observability` (Datadog driver) — `observability.metrics.query`                           | Optional; absent driver degrades to `confidence: 'low'`                           |
-| VCS repository read          | `plugin-ai-core-backend-module-vcs` — `vcs.repository.read_file`, `vcs.repository.search`, `vcs.repository.get_metadata` | Required for IaC anchor discovery                                                 |
-| RAG / knowledge retrieval    | `plugin-ai-core-backend-module-retrieval-augmenter`                                                                      | Optional; provides alerting-standards context for justification prose only        |
-| Runtime store                | `plugin-ai-core-backend-module-runtime-store`                                                                            | Required for checkpoint/artifact persistence                                      |
+| Capability | Module | State |
+|---|---|---|
+| LLM routing & model registry | `plugin-ai-core-backend-module-llm-openai` or `llm-openrouter` | Required; `ai.agents.alertAiTuner.model` references a registered model ID |
+| Incident alert history | `plugin-ai-core-backend-module-incident-management` — `IncidentManagementDriver.getAlertHistory()` | Required for the `incident.alert.history` and `incident.incident.list` tool calls |
+| Observability metrics | `plugin-ai-core-backend-module-observability` (Datadog driver) — `observability.metrics.query` | Optional; absent driver degrades to `confidence: 'low'` |
+| VCS repository read | `plugin-ai-core-backend-module-vcs` — `vcs.repository.read_file`, `vcs.repository.search`, `vcs.repository.get_metadata` | Required for IaC anchor discovery |
+| RAG / knowledge retrieval | `plugin-ai-core-backend-module-retrieval-augmenter` | Optional; provides alerting-standards context for justification prose only |
+| Runtime store | `plugin-ai-core-backend-module-runtime-store` | Required for checkpoint/artifact persistence |
 
 ### Known Contract Limitation — VCS Write Tool Not Yet Available
 
@@ -71,16 +73,16 @@ In `packages/backend/package.json`:
 
 ```json
 "dependencies": {
-  "@webstackbuilders/plugin-ai-agent-backend-alert-ai-tuner": "workspace:^"
+  "@ai-crew-suite/agent-alert-tuner-backend": "workspace:^"
 }
 ```
 
 ### 2. Wire the module into the backend
 
-In `packages/backend/src/index.ts`, add alongside the other `@webstackbuilders` module loads:
+In `packages/backend/src/index.ts`, add alongside the other `@ai-crew-suite` module loads:
 
 ```ts
-import { alertAiTunerModule } from "@webstackbuilders/plugin-ai-agent-backend-alert-ai-tuner";
+import { alertAiTunerModule } from '@ai-crew-suite/agent-alert-tuner-backend';
 
 // Inside your backend builder:
 backend.add(alertAiTunerModule);
@@ -94,7 +96,7 @@ The module **throws at boot** if `ai.agents.alertAiTuner.model` is missing. Add 
 ai:
   agents:
     alertAiTuner:
-      model: alert-ai-tuner # Registered model ID — required
+      model: alert-ai-tuner          # Registered model ID — required
 ```
 
 See [Configuration Reference](#configuration-reference) for the full schema and all defaults.
@@ -115,7 +117,7 @@ In `packages/app/package.json`:
 
 ```json
 "dependencies": {
-  "@webstackbuilders/plugin-ai-agent-frontend-alert-ai-tuner": "workspace:^"
+  "@ai-crew-suite/plugin-agent-alert-tuner-backend": "workspace:^"
 }
 ```
 
@@ -125,7 +127,7 @@ In `packages/app/src/App.tsx`, import the new-frontend-system alpha entry and ex
 
 ```ts
 // Import from the plugin's alpha entry point (new frontend system):
-import alertAiTunerExtension from "@webstackbuilders/plugin-ai-agent-frontend-alert-ai-tuner/alpha";
+import alertAiTunerExtension from '@ai-crew-suite/plugin-agent-alert-tuner-backend/alpha';
 
 // Add to your feature flags / extensions array:
 const app = createApp({
@@ -157,37 +159,37 @@ ai:
 
       # --- optional, with defaults ---
 
-      windowDays: 14 # Default trailing analysis window (days)
-      maxWindowDays: 30 # Hard clamp on any requested window
-      maxHistoryEntries: 500 # Clamp on incident.alert.history result limit
-      maxToolInvocations: 16 # Shared read-tool budget per evaluation
-      maxFileCharacters: 40000 # Character cap on IaC file content
+      windowDays: 14               # Default trailing analysis window (days)
+      maxWindowDays: 30            # Hard clamp on any requested window
+      maxHistoryEntries: 500       # Clamp on incident.alert.history result limit
+      maxToolInvocations: 16       # Shared read-tool budget per evaluation
+      maxFileCharacters: 40000     # Character cap on IaC file content
 
       # Statistical decision boundaries
       noise:
-        minSamples: 8 # Below this -> insufficient_evidence
-        autoResolveRatio: 0.8 # Minimum auto-resolve share for noisy verdict
-        selfClearSeconds: 300 # Maximum median self-clear (s) for noisy
-        maxPagedRatio: 0.2 # Paged share above this -> inconclusive
-        correlationWindowMinutes: 15 # Incident/deploy overlap padding
+        minSamples: 8              # Below this -> insufficient_evidence
+        autoResolveRatio: 0.8      # Minimum auto-resolve share for noisy verdict
+        selfClearSeconds: 300      # Maximum median self-clear (s) for noisy
+        maxPagedRatio: 0.2         # Paged share above this -> inconclusive
+        correlationWindowMinutes: 15   # Incident/deploy overlap padding
 
       # Safety caps for the deterministic patch engine
       patch:
-        maxThresholdIncreasePct: 15 # Hard cap on threshold increase
-        maxDurationMultiplier: 3 # e.g. "2m" -> max "6m"
-        peakHeadroomPct: 10 # Headroom above observed metric peak
-        iacPaths: # Searched when no explicit path supplied
+        maxThresholdIncreasePct: 15    # Hard cap on threshold increase
+        maxDurationMultiplier: 3       # e.g. "2m" -> max "6m"
+        peakHeadroomPct: 10            # Headroom above observed metric peak
+        iacPaths:                      # Searched when no explicit path supplied
           - alerts.tf
           - prometheus-rules.yaml
           - monitoring/**
 
       # Background weekly noise sweep (disabled by default)
       sweep:
-        enabled: false # Kill switch — sweep runs are proposal-only
-        cron: "0 6 * * 1" # Default: Monday 06:00 UTC
-        maxSweepAlerts: 25 # Per-sweep dispatch cap
-        cooldownDays: 30 # Re-proposal cooldown per alert+patchHash
-        services: [] # Services evaluated when sweep fires
+        enabled: false             # Kill switch — sweep runs are proposal-only
+        cron: '0 6 * * 1'         # Default: Monday 06:00 UTC
+        maxSweepAlerts: 25         # Per-sweep dispatch cap
+        cooldownDays: 30           # Re-proposal cooldown per alert+patchHash
+        services: []               # Services evaluated when sweep fires
 
       # Future PR publishing (ineffective without VCS write tool)
       publish:
@@ -240,14 +242,14 @@ An evaluation is triggered by `POST agents/alert-ai-tuner/runs` with an `AlertTu
 ```ts
 type AlertTuningRequest = {
   version: 1;
-  source: "manual" | "scheduler";
-  alertId?: string; // e.g. 'cpu-utilization-high'
-  service?: string; // e.g. 'checkout-api'
-  entityRef?: string; // Future catalog-entity-based resolution
-  windowDays?: number; // Overrides the default 14
-  repoUrl?: string; // Required until CatalogEntityResolver lands
-  iacPath?: string; // Overrides patch.iaciPaths search
-  publish?: boolean; // Request write path; ineffective without VCS write tool
+  source: 'manual' | 'scheduler';
+  alertId?: string;        // e.g. 'cpu-utilization-high'
+  service?: string;        // e.g. 'checkout-api'
+  entityRef?: string;      // Future catalog-entity-based resolution
+  windowDays?: number;     // Overrides the default 14
+  repoUrl?: string;        // Required until CatalogEntityResolver lands
+  iacPath?: string;        // Overrides patch.iaciPaths search
+  publish?: boolean;       // Request write path; ineffective without VCS write tool
 };
 ```
 
@@ -257,12 +259,12 @@ At minimum, one of `alertId` or `service` must be supplied. The `repoUrl` is cur
 
 The graph emits four step transitions, with early termination gates between stages:
 
-| Step          | Source                                                                 | Behaviour and termination                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **observe**   | `history.ts`                                                           | Reads alert firing history via `incident.alert.history`; derives durations from trigger/resolve timestamps; window-clamps and deduplicates newest-first. **Evidence floor check**: if the resulting sample count is below `noise.minSamples`, the run emits `insufficient_evidence` immediately — before any model call or repository read.                                                                                                                  |
-| **analyze**   | `noise.ts`                                                             | Computes the deterministic `NoiseScore` from normalized `FiringSample[]` using nearest-rank percentiles (median, p90). The model is never consulted here; the verdict is fixed in pure arithmetic.                                                                                                                                                                                                                                                           |
-| **correlate** | `correlate.ts`                                                         | Reads real incidents via `incident.incident.list`, normalizes them into padded `SuppressionWindow[]`, and tests each firing for interval overlap. Any overlap forces `verdict: 'real_signal'` — a terminal outcome that removes the patch path entirely. Entries with `resolution: 'unresolved'` participate in correlation but not in duration statistics.                                                                                                  |
-| **locate**    | `pipeline.ts` (orchestrating `locate.ts` + `patch.ts` + `proposal.ts`) | Resolves the owning IaC file via `vcs.repository.search` / `vcs.repository.read_file`, discovers the exact `ThresholdAnchor` with line numbers (HCL `resource` blocks and Prometheus `- alert:` entries), optionally reads metric headroom via `observability.metrics.query`, derives capped threshold/duration changes via `patch.ts`, validates the anchored unified diff against the source file, and assembles the final `AlertTuningProposal` artifact. |
+| Step | Source | Behaviour and termination |
+|---|---|---|
+| **observe** | `history.ts` | Reads alert firing history via `incident.alert.history`; derives durations from trigger/resolve timestamps; window-clamps and deduplicates newest-first. **Evidence floor check**: if the resulting sample count is below `noise.minSamples`, the run emits `insufficient_evidence` immediately — before any model call or repository read. |
+| **analyze** | `noise.ts` | Computes the deterministic `NoiseScore` from normalized `FiringSample[]` using nearest-rank percentiles (median, p90). The model is never consulted here; the verdict is fixed in pure arithmetic. |
+| **correlate** | `correlate.ts` | Reads real incidents via `incident.incident.list`, normalizes them into padded `SuppressionWindow[]`, and tests each firing for interval overlap. Any overlap forces `verdict: 'real_signal'` — a terminal outcome that removes the patch path entirely. Entries with `resolution: 'unresolved'` participate in correlation but not in duration statistics. |
+| **locate** | `pipeline.ts` (orchestrating `locate.ts` + `patch.ts` + `proposal.ts`) | Resolves the owning IaC file via `vcs.repository.search` / `vcs.repository.read_file`, discovers the exact `ThresholdAnchor` with line numbers (HCL `resource` blocks and Prometheus `- alert:` entries), optionally reads metric headroom via `observability.metrics.query`, derives capped threshold/duration changes via `patch.ts`, validates the anchored unified diff against the source file, and assembles the final `AlertTuningProposal` artifact. |
 
 The graph is **proposal-only**: there is no `resume()` method, no gate step, and no publish path. The run terminates at `done` after the proposal artifact is emitted. The approval gate and pull-request publish will be added once the shared `vcs.pull_request.create` write tool lands in `VcsDriver`.
 
@@ -276,18 +278,18 @@ type FiringSample = {
   triggeredAt: string;
   resolvedAt?: string;
   durationSeconds?: number;
-  resolution: "auto" | "manual" | "unresolved";
+  resolution: 'auto' | 'manual' | 'unresolved';
   paged: boolean;
 };
 
 type NoiseScore = {
   samples: number;
-  autoResolveRatio: number; // 0..1
-  medianSelfClearSeconds: number; // Drives the verdict
-  p90SelfClearSeconds: number; // Feeds the safety cap
-  pagedRatio: number; // Above maxPagedRatio -> inconclusive
-  verdict: "noisy" | "real_signal" | "inconclusive";
-  suppressedBy?: string[]; // inc-N / deploy evidence IDs
+  autoResolveRatio: number;         // 0..1
+  medianSelfClearSeconds: number;   // Drives the verdict
+  p90SelfClearSeconds: number;      // Feeds the safety cap
+  pagedRatio: number;               // Above maxPagedRatio -> inconclusive
+  verdict: 'noisy' | 'real_signal' | 'inconclusive';
+  suppressedBy?: string[];          // inc-N / deploy evidence IDs
 };
 ```
 
@@ -331,7 +333,7 @@ This posture is enforced at two levels:
 1. The tool allow-list is **read-only** — see `ALERT_AI_TUNER_TOOL_IDS` in `agent.ts`
 2. `proposal.ts` **re-validates** the model's output: if the model restates different numbers than those supplied, the proposal degrades to a fact-only proposal with the original numbers and records the discrepancy as a limitation
 
-The optional `knowledge.retrieve` tool pulls alerting-standards/runbook context into the PR body **only** so reviewers see _why_ the threshold policy allows the change. It must never influence `NoiseScore`, the verdict, or any numeric value in `ThresholdChange`.
+The optional `knowledge.retrieve` tool pulls alerting-standards/runbook context into the PR body **only** so reviewers see *why* the threshold policy allows the change. It must never influence `NoiseScore`, the verdict, or any numeric value in `ThresholdChange`.
 
 ## User Guide & Interface Walkthrough
 
@@ -394,9 +396,9 @@ Guardrails: per-sweep cap, sequential dispatch with delay, in-flight mutex, per-
 
 ## Turbo Workspace Resolution
 
-**Symptom**: `yarn typecheck --force` fails with missing exports from `@webstackbuilders/plugin-ai-core-node`.
+**Symptom**: `yarn typecheck --force` fails with missing exports from `@ai-crew-suite/plugin-kernel-node`.
 
-**Fix**: Ensure `@webstackbuilders/plugin-ai-core-node` is listed as a dependency in both the backend module and the root workspace. After adding, run:
+**Fix**: Ensure `@ai-crew-suite/plugin-kernel-node` is listed as a dependency in both the backend module and the root workspace. After adding, run:
 
 ```bash
 yarn install
@@ -405,7 +407,7 @@ yarn typecheck --force
 
 **Symptom**: TypeScript errors on `AgentDefinition`, `WorkflowRunner`, or the extension point types.
 
-**Fix**: These types are exported by `@webstackbuilders/plugin-ai-core-node`; verify you're importing from the workspace-scoped package (`workspace:*`) and not a transitive copy. If the build was recently added, run `yarn typecheck --force` to bust turbo caches.
+**Fix**: These types are exported by `@ai-crew-suite/plugin-kernel-node`; verify you're importing from the workspace-scoped package (`workspace:*`) and not a transitive copy. If the build was recently added, run `yarn typecheck --force` to bust turbo caches.
 
 ## Agent Execution Failures
 
@@ -427,7 +429,6 @@ The alert did not fire enough times in the configured window. The noise engine r
 **"anchor_not_found" on a legitimate alert definition**
 
 The IaC locator uses bounded pattern matching, not full YAML/HCL parsing. Verify:
-
 - The IaC file exists in the configured repository
 - The alert name in the file exactly matches the `alertId` supplied (case-sensitive)
 - The alert block is not nested in an unexpected structure (e.g., inside a `for_each` or `locals` block that shifts indentation)
@@ -442,7 +443,6 @@ The correlator found an overlapping real incident or deployment. Check the propo
 **LLM rate limits / context window overruns**
 
 The system prompt is compact and the model is only invoked for justification prose (after all arithmetic is complete). If rate limits occur:
-
 - Reduce `maxToolInvocations` to cap the read-tool budget per evaluation
 - Increase `maxHistoryEntries` clamping if the model is receiving too much firing history context
 - The model's output is re-validated by `proposal.ts` — if the model fails, the existing numbers are used in a fact-only proposal
@@ -461,13 +461,9 @@ The threshold change would violate a safety cap, the alert verdict was `not_nois
 
 These components are built for the future publish milestone. The current backend is proposal-only — there is no VCS write tool, so no `approval_request` SSE event is ever emitted. The page correctly hides these controls rather than fabricating a gate. When the shared `vcs.pull_request.create` tool lands in `plugin-ai-core-backend-module-vcs`, these controls will activate automatically.
 
----
-
 ## Roadmap
 
-### Waiting for Extension Plugins to Implement Contracts
-
-#### VCS Write Tool & Approval Gate
+### VCS Write Tool & Approval Gate
 
 Blocked on `vcs.pull_request.create` / `vcs.branch.create` (`effect: 'write'`) in `VcsDriver` and `plugin-ai-core-backend-module-vcs`. Once the shared write tool lands, the tuner will:
 
@@ -478,7 +474,7 @@ Blocked on `vcs.pull_request.create` / `vcs.branch.create` (`effect: 'write'`) i
 
 The frontend's `ApprovalBar` and `PublicationBanner` components are already built to this contract and will activate automatically when real approval events arrive.
 
-#### Deployment & Scaling Correlation
+### Deployment & Scaling Correlation
 
 Gated on `kubernetes.workload.get_timeline` in `plugin-ai-core-backend-module-kubernetes`. When available, the tuner will:
 
@@ -486,50 +482,22 @@ Gated on `kubernetes.workload.get_timeline` in `plugin-ai-core-backend-module-ku
 - Raise `confidence` from `low` to `high` for proposals backed by full K8s workload evidence
 - Surface deploy/scaling events alongside incident overlaps in the evidence bundle
 
-#### Catalog-Annotation-Based IaC Discovery
+### Catalog-Annotation-Based IaC Discovery
 
-Gated on `CatalogEntityResolver` in `@webstackbuilders/plugin-ai-core-node`. When available, the tuner will:
+Gated on `CatalogEntityResolver` in `@ai-crew-suite/plugin-kernel-node`. When available, the tuner will:
 
 - Resolve the infrastructure repository URL from a Backstage catalog entity reference (`entityRef`) instead of requiring an explicit `repoUrl`
 - Read custom catalog annotations (e.g., `backstage.io/iac-repo`) to automatically discover the owning IaC file
 - Eliminate the `anchor_not_found` outcome for catalog-registered services with properly annotated IaC locations
 
-### General
-
-#### Frontend Entity Card & Proposal Dashboard
+### Frontend Entity Card & Proposal Dashboard
 
 Requires a backend proposal-list endpoint. Once the endpoint is available, the frontend will gain:
 
 - A catalog entity card showing recent tuning proposals for a service, mountable on any entity page via the Backstage entity page extension system
 - A recent-proposal table with status, verdict, and patch summary columns, supporting filter-by-service and sort-by-date
 
-#### Production Dashboards & Model Evaluation Suite
-
-Post-stabilization observability and quality surface:
-
-- Usage dashboards tracking evaluation volume, verdict distribution, proposal-to-publication conversion rate, and sweep throughput
-- An opt-in real-model evaluation harness that compares deterministic noise scores against model-authored justification quality across a curated alert corpus
-- Token-usage and latency monitoring per-evaluation, surfaced through Backstage's built-in observability plugin
-
-#### Expanded Alert Lifecycle Management
-
-Extending the tuner beyond threshold patches:
-
-- **Alert silencing suggestions** — propose temporary silences for alerts with known maintenance windows, backed by deployment calendar correlation
-- **Escalation policy review** — surface alerts whose paging behavior contradicts the team's documented escalation policy
-- **Multi-repository fleet-wide sweeps** — evaluate entire service inventories in a single bounded run, with a unified proposal artifact per repository
-
-#### Infrastructure Apply Automation
-
-Opt-in post-approval automation gated behind an additional configuration flag:
-
-- `terraform plan` dry-run validation before the PR is opened
-- Automatic PR merging once required status checks pass (configurable, off by default)
-- Branch protection awareness — refuse to proceed when required checks are missing or unresolved
-
-### Testing
-
-#### Playwright E2E & Storybook Interaction Tests
+### Playwright E2E & Storybook Interaction Tests
 
 Dependent on the approval gate and VCS write tool. Once those are in place, the E2E suite will cover:
 
@@ -538,3 +506,27 @@ Dependent on the approval gate and VCS write tool. Once those are in place, the 
 - Degradation paths: `insufficient_evidence`, `real_signal`, and `anchor_not_found` terminal outcomes
 - Replay: shareable `?run=<id>` URLs restore the full run state from persisted events
 - Storybook interaction tests for `ApprovalBar` and `PublicationBanner` components (currently built but hidden pending real approval events from the backend)
+
+### Production Dashboards & Model Evaluation Suite
+
+Post-stabilization observability and quality surface:
+
+- Usage dashboards tracking evaluation volume, verdict distribution, proposal-to-publication conversion rate, and sweep throughput
+- An opt-in real-model evaluation harness that compares deterministic noise scores against model-authored justification quality across a curated alert corpus
+- Token-usage and latency monitoring per-evaluation, surfaced through Backstage's built-in observability plugin
+
+### Expanded Alert Lifecycle Management
+
+Extending the tuner beyond threshold patches:
+
+- **Alert silencing suggestions** — propose temporary silences for alerts with known maintenance windows, backed by deployment calendar correlation
+- **Escalation policy review** — surface alerts whose paging behavior contradicts the team's documented escalation policy
+- **Multi-repository fleet-wide sweeps** — evaluate entire service inventories in a single bounded run, with a unified proposal artifact per repository
+
+### Infrastructure Apply Automation
+
+Opt-in post-approval automation gated behind an additional configuration flag:
+
+- `terraform plan` dry-run validation before the PR is opened
+- Automatic PR merging once required status checks pass (configurable, off by default)
+- Branch protection awareness — refuse to proceed when required checks are missing or unresolved

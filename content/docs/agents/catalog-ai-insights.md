@@ -12,26 +12,30 @@ subcategory: Knowledge
 
 <span class="label label-blue">{{ page.subcategory }}</span>
 
-The **Catalog AI Insights** plugin provides a conversational interface for Spotify Backstage to answer operational questions about any Software Catalog entity. By asking questions like _"Who is on call?"_ or _"Why did the last deployment fail?"_, developers receive real-time, cited answers grounded in live operational data.
+---
 
-Instead of letting an LLM drive autonomous decision-making, the plugin relies on a **deterministic pipeline**: it programmatically routes intent, aggregates and redacts operational context, and uses the model strictly as a narrative synthesizer to author citation-backed responses - with automatic fallback to raw data if generation fails.
+## Summary
+
+The Catalog AI Insights plugin answers contextual operational questions about any Software Catalog entity using a deterministic intent router, a RAG-backed context gatherer, and a citation-constrained LLM synthesis step. An operator or developer asks a natural-language question about a service — "Who is on call?", "Where are the dashboard links?", "Why did the last deployment fail?", or any free-form operational query — and the backend orchestrates a read-only tool pipeline that gathers on-call shifts, recent incidents, observability links, Kubernetes workload state, deployment timelines, recent pull requests, and knowledge-base chunks into a normalized, redacted context bundle. The model then authors a cited answer from that bundle alone.
+
+Unlike plugins where the model drives decision-making, the insights agent treats the model as a **narrative synthesizer**: intent classification, tool selection, context normalization, and citation validation are all deterministic pure functions. If the model fails to produce valid output, the system falls back to a deterministic answer built directly from the gathered context — the user always receives a useful response.
 
 ## Key Features
 
-- **Deterministic Intent Routing**: Classifies queries via pattern matching into four fixed tool plans (`ownership-oncall`, `observability-links`, `deployment-health`, `general-context`) without model-driven tool selection.
-- **Entity-Scoped RAG**: Restricts retrieval chunks strictly to the target entity (`knowledge.retrieve` with `entityFilter` and configurable limits).
-- **Automated Data Redaction**: Automatically sanitizes context items before prompting, stripping bearer tokens, AWS keys, PEM blocks, and credential pairs.
-- **Deterministic Fallbacks**: Renders gathered context into cited answer blocks if the model fails validation, outputs invalid JSON, or leaves claims uncited.
-- **Multi-Turn Session Memory**: Uses a persistent `sessionId` to chain follow-up questions within the active entity context.
-- **Proactive Nightly Scans**: Automatically runs bounded deployment-health probes across Kubernetes-annotated components, saving them as replayable AI Core runs.
-- **Embedded & Dedicated UI**: Offers an Entity Page card with one-click canned prompts and a free-form dialog, alongside a deep-linkable `/catalog-ai-insights` view.
+- **Deterministic intent routing** via keyword/pattern matching — the model never chooses which tools to call; four intent classes (`ownership-oncall`, `observability-links`, `deployment-health`, `general-context`) each drive a fixed, per-intent tool plan
+- **Entity-scoped RAG retrieval** through `knowledge.retrieve` with `entityFilter` scoped to the target catalog entity, capped by `maxRetrievalChunks`
+- **Session memory** for conversational follow-up — the `sessionId` returned with each `done` event chains successive questions into a single session context
+- **Context redaction** that strips bearer tokens, credential key=value pairs, AWS key IDs, and PEM private keys from every context item before it enters the model prompt or any artifact
+- **Automatic fallback** when the model produces invalid JSON, uncited claims, or fails entirely — each context item becomes its own cited answer block, and the report is marked `partial`
+- **Nightly scan dispatching** that lists catalog components annotated with `backstage.io/kubernetes-id`, plans a bounded set of deployment-health probes, and dispatches each as a fully persisted, replayable AI Core run
+- **Entity-page insights card** with canned one-click questions and a free-form ask dialog, plus a standalone deep-linkable page at `/catalog-ai-insights`
 
 ## Architecture
 
 The plugin follows the standard two-package Backstage agent layout:
 
-- **Backend module** (`@webstackbuilders/plugin-ai-agent-backend-catalog-ai-insights`, `role: backend-plugin-module`, `pluginId: ai-core`) — registers the `CatalogInsightsGraph` workflow runner (ID `catalog-insights`), the `catalog-ai-insights` agent definition with a read-only tool allow-list of 11 tools, manual and scheduler triggers, and an optional nightly scan task
-- **Frontend plugin** (`@webstackbuilders/plugin-ai-agent-frontend-catalog-ai-insights`, `role: frontend-plugin`, `pluginId: catalog-ai-insights`) — provides an entity page card (`EntityInsightsCard` / `EntityContextInsightsCard`), a standalone page at `/catalog-ai-insights`, a typed SSE API client, a live run progress view, and cited-answer/context panels
+- **Backend module** (`@ai-crew-suite/plugin-agent-catalog-insights-backend`, `role: backend-plugin-module`, `pluginId: ai-core`) — registers the `CatalogInsightsGraph` workflow runner (ID `catalog-insights`), the `catalog-ai-insights` agent definition with a read-only tool allow-list of 11 tools, manual and scheduler triggers, and an optional nightly scan task
+- **Frontend plugin** (`@ai-crew-suite/plugin-agent-catalog-insights`, `role: frontend-plugin`, `pluginId: catalog-ai-insights`) — provides an entity page card (`EntityInsightsCard` / `EntityContextInsightsCard`), a standalone page at `/catalog-ai-insights`, a typed SSE API client, a live run progress view, and cited-answer/context panels
 
 The graph runs through seven deterministic nodes: `request.validate → intent.classify → entity.resolve → context.gather → context.normalize → insight.synthesize → insight.finalize`. The artifact kind is `catalog-insight-report`. The agent's memory mode is `session`, enabling conversational follow-up across multiple questions about the same entity.
 
@@ -41,22 +45,22 @@ The graph runs through seven deterministic nodes: `request.validate → intent.c
 
 ### Backstage Version
 
-- Requires a Backstage backend running the `ai-core` plugin and its extension-point system (`agentExtensionPoint`, `triggerExtensionPoint`, `workflowRunnerExtensionPoint` from `@webstackbuilders/plugin-ai-core-node`)
+- Requires a Backstage backend running the `ai-core` plugin and its extension-point system (`agentExtensionPoint`, `triggerExtensionPoint`, `workflowRunnerExtensionPoint` from `@ai-crew-suite/plugin-kernel-node`)
 - Requires the catalog backend plugin for entity resolution (`@backstage/catalog-client`)
 
 ### Agentic Requirements
 
 All agentic dependencies are delivered through existing shared modules. The Catalog AI Insights plugin introduces **no new infrastructure**:
 
-| Capability                   | Module                                                                                                       | State                                                                                                                  |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| LLM routing & model registry | `plugin-ai-core-backend-module-llm-openai` or `llm-openrouter`                                               | Required; `ai.agents.catalogAiInsights.model` references a registered model ID                                         |
-| RAG / knowledge retrieval    | `plugin-ai-core-backend-module-retrieval-augmenter` + pgvector/qdrant storage                                | Required for entity-scoped documentation context; tool calls simply return empty when unavailable, never failing a run |
-| Incident on-call             | `plugin-ai-core-backend-module-incident-management` — `incident.oncall.get` / `incident.incident.list`       | Optional; missing driver records a `partial` limitation                                                                |
-| Observability                | `plugin-ai-core-backend-module-observability` — `observability.dashboard.list` / `observability.logs.search` | Optional; missing driver records a `partial` limitation                                                                |
-| Kubernetes                   | `plugin-ai-core-backend-module-kubernetes` — workload resolve/snapshot/timeline/events                       | Optional; requires `backstage.io/kubernetes-id` catalog annotation; missing driver records a `partial` limitation      |
-| VCS                          | `plugin-ai-core-backend-module-vcs` — `vcs.pull_request.list`                                                | Optional; requires source repository annotation; missing repo annotation records a limitation                          |
-| Runtime store                | `plugin-ai-core-backend-module-runtime-store`                                                                | Required for run/artifact persistence                                                                                  |
+| Capability | Module | State |
+|---|---|---|
+| LLM routing & model registry | `plugin-ai-core-backend-module-llm-openai` or `llm-openrouter` | Required; `ai.agents.catalogAiInsights.model` references a registered model ID |
+| RAG / knowledge retrieval | `plugin-ai-core-backend-module-retrieval-augmenter` + pgvector/qdrant storage | Required for entity-scoped documentation context; tool calls simply return empty when unavailable, never failing a run |
+| Incident on-call | `plugin-ai-core-backend-module-incident-management` — `incident.oncall.get` / `incident.incident.list` | Optional; missing driver records a `partial` limitation |
+| Observability | `plugin-ai-core-backend-module-observability` — `observability.dashboard.list` / `observability.logs.search` | Optional; missing driver records a `partial` limitation |
+| Kubernetes | `plugin-ai-core-backend-module-kubernetes` — workload resolve/snapshot/timeline/events | Optional; requires `backstage.io/kubernetes-id` catalog annotation; missing driver records a `partial` limitation |
+| VCS | `plugin-ai-core-backend-module-vcs` — `vcs.pull_request.list` | Optional; requires source repository annotation; missing repo annotation records a limitation |
+| Runtime store | `plugin-ai-core-backend-module-runtime-store` | Required for run/artifact persistence |
 
 ---
 
@@ -70,16 +74,16 @@ In `packages/backend/package.json`:
 
 ```json
 "dependencies": {
-  "@webstackbuilders/plugin-ai-agent-backend-catalog-ai-insights": "workspace:^"
+  "@ai-crew-suite/plugin-agent-catalog-insights-backend": "workspace:^"
 }
 ```
 
 #### 2. Wire the module into the backend
 
-In `packages/backend/src/index.ts`, add alongside other `@webstackbuilders` module loads:
+In `packages/backend/src/index.ts`, add alongside other `@ai-crew-suite` module loads:
 
 ```ts
-import { catalogAiInsightsModule } from "@webstackbuilders/plugin-ai-agent-backend-catalog-ai-insights";
+import { catalogAiInsightsModule } from '@ai-crew-suite/plugin-agent-catalog-insights-backend';
 
 // Inside your backend builder:
 backend.add(catalogAiInsightsModule);
@@ -114,7 +118,7 @@ In `packages/app/package.json`:
 
 ```json
 "dependencies": {
-  "@webstackbuilders/plugin-ai-agent-frontend-catalog-ai-insights": "workspace:^"
+  "@ai-crew-suite/plugin-agent-catalog-insights": "workspace:^"
 }
 ```
 
@@ -123,7 +127,7 @@ In `packages/app/package.json`:
 In `packages/app/src/App.tsx`, import the alpha entry point:
 
 ```ts
-import catalogAiInsightsExtensions from "@webstackbuilders/plugin-ai-agent-frontend-catalog-ai-insights/alpha";
+import catalogAiInsightsExtensions from '@ai-crew-suite/plugin-agent-catalog-insights/alpha';
 
 const app = createApp({
   features: [
@@ -156,17 +160,17 @@ ai:
 
       # --- optional, with defaults ---
 
-      maxContextItems: 24 # Max context items retained in the report bundle
-      maxRetrievalChunks: 6 # Max knowledge-retrieval chunks attached per run
-      maxLogResults: 5 # Max log-search results retained for observability answers
-      maxToolInvocations: 10 # Hard cap on tool invocations per insight run
-      lookbackMinutes: 1440 # Minutes of context gathered for deployment-health (24h)
+      maxContextItems: 24          # Max context items retained in the report bundle
+      maxRetrievalChunks: 6        # Max knowledge-retrieval chunks attached per run
+      maxLogResults: 5             # Max log-search results retained for observability answers
+      maxToolInvocations: 10       # Hard cap on tool invocations per insight run
+      lookbackMinutes: 1440        # Minutes of context gathered for deployment-health (24h)
 
       # Nightly scan settings (disabled by default — opt-in)
       scan:
-        enabled: false # Kill switch — scans must be explicitly enabled
-        cron: "0 3 * * *" # Default: daily at 03:00 UTC
-        maxScanEntities: 25 # Maximum entities scanned per run
+        enabled: false             # Kill switch — scans must be explicitly enabled
+        cron: '0 3 * * *'          # Default: daily at 03:00 UTC
+        maxScanEntities: 25        # Maximum entities scanned per run
 ```
 
 ### RBAC & Permissions
@@ -240,10 +244,10 @@ A question is triggered by `POST agents/catalog-ai-insights/runs` with a `Catalo
 ```ts
 type CatalogInsightRequest = {
   version: 1;
-  entityRef: string; // e.g. 'component:default/payment-gateway'
-  question: string; // Natural-language, bounded to 2048 chars
-  source: "manual" | "scheduler";
-  sessionId?: string; // Pass to continue a prior session
+  entityRef: string;        // e.g. 'component:default/payment-gateway'
+  question: string;          // Natural-language, bounded to 2048 chars
+  source: 'manual' | 'scheduler';
+  sessionId?: string;        // Pass to continue a prior session
   intentHint?: InsightIntent; // Accepted only when classifier agrees or is unsure
 };
 ```
@@ -254,24 +258,24 @@ At minimum, `entityRef` must be a valid catalog entity reference and `question` 
 
 The graph runs a seven-node pipeline. Nodes after `entity.resolve` are intent-sensitive — the tools invoked in `context.gather` depend on which intent was classified:
 
-| Node                   | Source                   | Behaviour                                                                                                                                                                                                                                                                                                                  |
-| ---------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **request.validate**   | `request.ts`             | Parses the JSON payload, validates `entityRef` against a catalog-ref regex, bounds `question` to 2048 characters, and validates `intentHint` against the known intent set                                                                                                                                                  |
-| **intent.classify**    | `intents.ts`             | Runs pure keyword/pattern matching against the question text to select one of 4 intents. Accepts a caller-supplied `intentHint` only when it matches the classifier's decision or when the classifier would select `general-context`                                                                                       |
-| **entity.resolve**     | `CatalogContextResolver` | Resolves the entity reference through the catalog backend using a plugin-to-plugin auth token. Returns a catalog entity summary with type, name, labels, annotations, and relations. Failures terminate the run                                                                                                            |
-| **context.gather**     | `gather.ts`              | Invokes the intent-specific tool plan (see table below), building raw context items from each tool's output. Catalog entity summary and entity-scoped RAG retrieval are always appended                                                                                                                                    |
-| **context.normalize**  | `context.ts`             | Redacts sensitive text, deduplicates by source-scoped ID (first occurrence wins), sorts by `observedAt` timestamp (undated items last), caps to `maxContextItems`, and assigns stable `ctx-N` citation IDs                                                                                                                 |
-| **insight.synthesize** | `insight.ts`             | Builds a prompt from the system template + entity summary + normalized context bundle, invokes the model, extracts JSON from the response (tolerates fenced code blocks), validates every answer block and link against the citation ID set, and falls back to a deterministic answer if the model output fails validation |
-| **insight.finalize**   | `insight.ts`             | Assembles the final `CatalogInsightReport` artifact with status (`answered`, `partial`, or `insufficient_context`), cited answer blocks, deep links, limitations, and the retained context bundle                                                                                                                          |
+| Node | Source | Behaviour |
+|---|---|---|
+| **request.validate** | `request.ts` | Parses the JSON payload, validates `entityRef` against a catalog-ref regex, bounds `question` to 2048 characters, and validates `intentHint` against the known intent set |
+| **intent.classify** | `intents.ts` | Runs pure keyword/pattern matching against the question text to select one of 4 intents. Accepts a caller-supplied `intentHint` only when it matches the classifier's decision or when the classifier would select `general-context` |
+| **entity.resolve** | `CatalogContextResolver` | Resolves the entity reference through the catalog backend using a plugin-to-plugin auth token. Returns a catalog entity summary with type, name, labels, annotations, and relations. Failures terminate the run |
+| **context.gather** | `gather.ts` | Invokes the intent-specific tool plan (see table below), building raw context items from each tool's output. Catalog entity summary and entity-scoped RAG retrieval are always appended |
+| **context.normalize** | `context.ts` | Redacts sensitive text, deduplicates by source-scoped ID (first occurrence wins), sorts by `observedAt` timestamp (undated items last), caps to `maxContextItems`, and assigns stable `ctx-N` citation IDs |
+| **insight.synthesize** | `insight.ts` | Builds a prompt from the system template + entity summary + normalized context bundle, invokes the model, extracts JSON from the response (tolerates fenced code blocks), validates every answer block and link against the citation ID set, and falls back to a deterministic answer if the model output fails validation |
+| **insight.finalize** | `insight.ts` | Assembles the final `CatalogInsightReport` artifact with status (`answered`, `partial`, or `insufficient_context`), cited answer blocks, deep links, limitations, and the retained context bundle |
 
 #### Per-Intent Tool Plans
 
-| Intent                  | Tools invoked                                                                                            | Annotation required                                  |
-| ----------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| **ownership-oncall**    | `incident.oncall.get`, `incident.incident.list`                                                          | PagerDuty service ID annotation                      |
-| **observability-links** | `observability.dashboard.list`, `observability.logs.search`                                              | None (optional — degrades to `partial` if no driver) |
-| **deployment-health**   | `kubernetes.workload.resolve`, `.get_snapshot`, `.list_events`, `.get_timeline`, `vcs.pull_request.list` | `backstage.io/kubernetes-id` annotation              |
-| **general-context**     | None (catalog entity summary + RAG retrieval only)                                                       | None                                                 |
+| Intent | Tools invoked | Annotation required |
+|---|---|---|
+| **ownership-oncall** | `incident.oncall.get`, `incident.incident.list` | PagerDuty service ID annotation |
+| **observability-links** | `observability.dashboard.list`, `observability.logs.search` | None (optional — degrades to `partial` if no driver) |
+| **deployment-health** | `kubernetes.workload.resolve`, `.get_snapshot`, `.list_events`, `.get_timeline`, `vcs.pull_request.list` | `backstage.io/kubernetes-id` annotation |
+| **general-context** | None (catalog entity summary + RAG retrieval only) | None |
 
 Every intent always appends the catalog entity summary from `entity.resolve` and entity-scoped RAG chunks from `knowledge.retrieve`, regardless of the tool plan.
 
@@ -306,7 +310,6 @@ when a source is absent, and never fabricate links, names, or deployment states.
 ```
 
 The full prompt sent to the model is built by `buildInsightPrompt()` and includes:
-
 - The agent's system prompt
 - The user's original question
 - The catalog entity's type, name, labels, and annotations
@@ -316,7 +319,6 @@ The full prompt sent to the model is built by `buildInsightPrompt()` and include
 #### Sensitive Text Redaction
 
 All context item summaries and model output pass through `redactSensitiveText()` before entering the model prompt or appearing in any artifact, SSE event, log, or test snapshot. The redaction engine strips:
-
 - Bearer tokens
 - `password|secret|token|api_key|access_key|authorization|credential=...` patterns
 - AWS access key IDs (`AKIA`/`ASIA` prefixes)
@@ -339,11 +341,11 @@ Both surfaces deep-link to current runs via `?run=<id>` and persist the run ID i
 
 The entity card offers three one-click questions, each pre-bound to a deterministic intent:
 
-| Button                            | Question sent                                            | Intent                |
-| --------------------------------- | -------------------------------------------------------- | --------------------- |
-| Who is on call?                   | `Who is on call for this service?`                       | `ownership-oncall`    |
-| Where are the logs?               | `Where can I find logs and dashboards for this service?` | `observability-links` |
-| Why did the last deployment fail? | `Why did the last deployment fail?`                      | `deployment-health`   |
+| Button | Question sent | Intent |
+|---|---|---|
+| Who is on call? | `Who is on call for this service?` | `ownership-oncall` |
+| Where are the logs? | `Where can I find logs and dashboards for this service?` | `observability-links` |
+| Why did the last deployment fail? | `Why did the last deployment fail?` | `deployment-health` |
 
 ### Human-in-the-Loop Actions
 
@@ -387,13 +389,13 @@ Guardrails: per-scan entity cap, in-flight mutex that skips a new scan while the
 
 ### Turbo Workspace Resolution
 
-**Symptom**: `yarn typecheck --force` fails with missing exports from `@webstackbuilders/plugin-ai-core-node`.
+**Symptom**: `yarn typecheck --force` fails with missing exports from `@ai-crew-suite/plugin-kernel-node`.
 
 **Fix**: Ensure the dependency is listed in the backend module's `package.json` as `"workspace:*"` and that you've run `yarn install` after adding it.
 
 **Symptom**: TypeScript errors on `CatalogEntityResolver` type.
 
-**Fix**: This type is exported by `@webstackbuilders/plugin-ai-core-node`. Verify you're importing from the workspace-scoped package and not a transitive copy.
+**Fix**: This type is exported by `@ai-crew-suite/plugin-kernel-node`. Verify you're importing from the workspace-scoped package and not a transitive copy.
 
 ### Agent Execution Failures
 
@@ -411,7 +413,6 @@ ai:
 **Run terminates with `insufficient_context` on every question**
 
 No tools returned usable data. Check that:
-
 - The entity reference resolves to an actual catalog entity (verify in the catalog UI)
 - The backend service identity has permission to read the entity
 - Required annotations are present for the intent (see the annotation table in Configuration Reference)
@@ -421,7 +422,6 @@ No tools returned usable data. Check that:
 **Answer says "not available in this installation" for a source that should work**
 
 A driver returned no results or was not installed. The report's `limitations` array lists exactly which sources were unavailable and why. Check that:
-
 - The incident management module is installed for on-call/incident context
 - The observability module is installed for dashboard and log links
 - The Kubernetes module is installed and the entity has `backstage.io/kubernetes-id`
@@ -456,9 +456,7 @@ Each canned question carries a fixed `intentHint`. If the question text does not
 
 ## Roadmap
 
-### Waiting for Extension Plugins to Implement Contracts
-
-#### Slack Notification Dispatch
+### Slack Notification Dispatch
 
 The implementation plan deferred `communication.message.post` (Slack dispatch of scan findings). When this tool lands in a future communication module:
 
@@ -466,16 +464,14 @@ The implementation plan deferred `communication.message.post` (Slack dispatch of
 - Dispatch will be gated behind an explicit `scan.notify.enabled` config flag and approval policy
 - Notification content will be bounded, redacted, and never include raw logs, secrets, or model output
 
-### General
-
-#### Multi-Entity & Portfolio Questions
+### Multi-Entity & Portfolio Questions
 
 Currently restricted to one entity ref per run. Future work:
 
 - Accept entity queries scoped to catalog kinds, labels, or annotation filters (e.g., "which services owned by team-payments had deployment failures this week?") rather than a single `entityRef`
 - Produce a portfolio-level answer with per-entity cited context blocks, each scoped to its own gathered data
 
-#### Usage Dashboards & Model Evaluation
+### Usage Dashboards & Model Evaluation
 
 Post-stabilization observability and quality surface:
 
@@ -483,11 +479,11 @@ Post-stabilization observability and quality surface:
 - An opt-in evaluation harness that compares model-authored answers against a curated set of questions with known-good catalog fixture data, measuring citation grounding and factual accuracy
 - Token-usage and latency monitoring per question, surfaced through Backstage's built-in observability plugin
 
-#### Catalog Entity Search Integration
+### Catalog Entity Search Integration
 
 Allow the standalone page to accept a catalog entity name or search query (rather than requiring an explicit `entityRef`) and auto-resolve it through the catalog search API before submitting the question.
 
-#### Write-Capable Follow-Up Actions
+### Write-Capable Follow-Up Actions
 
 Extending the insights agent beyond read-only Q&A:
 
