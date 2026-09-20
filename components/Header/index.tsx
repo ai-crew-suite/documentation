@@ -1,14 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 
 import type { HeaderComponentContent } from "@/lib/headerDefaults";
 
 import { PageSection } from "../Section";
-import logo from "@/assets/images/logo.svg";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface HeaderProps {
@@ -38,12 +36,8 @@ export function Header({ content }: HeaderProps) {
             href="/"
             className="flex min-w-0 items-center gap-2 text-content-active no-underline sm:gap-3"
           >
-            <Image
-              src={logo}
-              alt="AI Crew Suite logo"
-              className="h-14 w-14 shrink-0 sm:h-16 sm:w-16"
-              priority
-            />
+            {/* Empty round circle placeholder */}
+            <div className="h-14 w-14 shrink-0 rounded-full border-2 border-secondary sm:h-16 sm:w-16" />
             <span className="min-w-0 truncate text-lg font-semibold tracking-tight text-secondary hover:text-secondary-offset sm:ml-2 sm:text-3xl">
               AI Crew Suite
             </span>
@@ -91,13 +85,6 @@ export function Header({ content }: HeaderProps) {
                 <span className="sr-only">{mobileMenuLabel}</span>
               </button>
             )}
-
-            <Link
-              href="/signup"
-              className="hidden rounded-full bg-accent px-4 py-2 text-base font-semibold text-primary-inverse no-underline transition-colors hover:bg-accent-offset sm:text-lg md:inline-flex"
-            >
-              {content.loginButtonText}
-            </Link>
           </div>
         </div>
 

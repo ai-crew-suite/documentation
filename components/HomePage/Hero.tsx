@@ -1,63 +1,37 @@
-import Image from "next/image";
 import Link from "next/link";
 
-import heroImage from "@/assets/images/hero.png";
 import { IHeroProps } from "@/lib/types";
 
-import { PageSection } from "../Section";
 import { Button } from "../shared/button";
 
 /**
- * Marketing landing page hero.
+ * Marketing landing page hero — blueprint paper style.
  */
 const Hero = ({ description, title, btnGetStarted }: IHeroProps) => {
   return (
-    <PageSection id="about" classes="px-8 sm:px-12 pt-4 sm:pt-8 pb-4 sm:pb-10">
-      <div className="relative grid items-center gap-10 lg:grid-cols-2">
-        <div className="flex max-w-2xl flex-col items-start gap-6">
-          <div className="space-y-5">
-            <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
-              {title}
-            </h1>
-            <p className="max-w-2xl text-content-active text-lg sm:text-xl leading-8">
-              {description}
-            </p>
-          </div>
+    <section className="relative mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 pt-32 pb-16 text-center sm:px-6 sm:pt-40 sm:pb-20">
+      <div className="flex max-w-3xl flex-col items-center gap-6">
+        <h1 className="text-4xl font-semibold tracking-tight text-secondary sm:text-5xl lg:text-6xl">
+          {title}
+        </h1>
+        <p className="max-w-2xl text-lg leading-8 text-content-offset sm:text-xl">
+          {description}
+        </p>
 
-          {btnGetStarted && btnGetStarted.text.trim() !== "" ? (
-            <div
-              data-testid="hero-cta-container"
-              className="flex w-full justify-center md:justify-start"
+        {btnGetStarted && btnGetStarted.text.trim() !== "" ? (
+          <div data-testid="hero-cta-container" className="mt-4">
+            <Button
+              asChild
+              variant="default"
+              size="lg"
+              className="h-12 rounded-full bg-secondary px-8 text-lg font-semibold text-secondary-inverse transition-colors hover:bg-secondary-offset"
             >
-              <Button
-                asChild
-                variant="default"
-                size="lg"
-                className="h-12 rounded-full bg-accent px-6 text-lg font-semibold text-primary-inverse transition-colors hover:bg-accent-offset mb-4 sm:mb-0"
-              >
-                <Link href={btnGetStarted.link}>{btnGetStarted.text}</Link>
-              </Button>
-            </div>
-          ) : null}
-        </div>
-
-        <div
-          data-testid="hero-image-container"
-          className="relative mx-auto hidden w-full max-w-2xl md:block lg:pl-6"
-        >
-          <div className="relative">
-            <Image
-              src={heroImage}
-              alt="AI Crew Suite product illustration"
-              priority
-              width={558}
-              height={431}
-              className="h-auto w-full"
-            />
+              <Link href={btnGetStarted.link}>{btnGetStarted.text}</Link>
+            </Button>
           </div>
-        </div>
+        ) : null}
       </div>
-    </PageSection>
+    </section>
   );
 };
 

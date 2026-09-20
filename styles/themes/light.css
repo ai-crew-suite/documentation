@@ -41,7 +41,7 @@
    */
 
   /** A solid fill color for page page elements */
-  --theme-color-page-base: #d3dbe6; /** --color-bg */
+  --theme-color-page-base: #cbdbe5; /** --color-bg */
 
   /** Opposite of a solid fill color for page page elements */
   --theme-color-page-inverse: #1b222e;

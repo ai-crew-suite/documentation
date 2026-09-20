@@ -23,7 +23,7 @@ import {
 
 export const defaultHeroProps: IHeroProps = {
   title:
-    "AI Crew Suite: Eighteen agentic workflow plugins for Spotify&apos;s Backstage IDP",
+    "AI Crew Suite: Agentic workflow plugins for Backstage IDP",
   description:
     "Supercharge your Backstage developer portal with AI-powered workflows. Automate software delivery, infrastructure management, and developer onboarding with intelligent agents.",
   btnGetStarted: {

@@ -465,8 +465,6 @@ These components are built for the future publish milestone. The current backend
 
 ## Roadmap
 
-The following features are planned for future releases once their shared infrastructure dependencies land.
-
 ### Waiting for Extension Plugins to Implement Contracts
 
 #### VCS Write Tool & Approval Gate

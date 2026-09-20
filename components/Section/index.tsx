@@ -21,9 +21,8 @@ export const PageSection = <T extends SectionTag = "section">({
       className={cn(
         "relative w-full overflow-hidden",
         "mx-auto max-w-6xl px-4 sm:px-6",
-        "rounded-4xl bg-page-offset",
+        "rounded-4xl bg-page-offset/90",
         shadowClass,
-        "backdrop-blur-[18px]",
         classes,
       )}
       {...props}
