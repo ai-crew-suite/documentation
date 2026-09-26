@@ -1,0 +1,21 @@
+{
+  "$schema": "https://renovatebot.com",
+  "extends": [
+    "config:best-practices",
+    "helpers:pinGitHubActionDigestsToSemver"
+  ],
+  "schedule": ["on tuesday"],
+  "packageRules": [
+    {
+      "description": "Bundle all upgrades across github actions and Next.js package.jsons into a single PR",
+      "matchPackagePatterns": ["*"],
+      "groupName": "All Dependencies",
+      "prBodyNotes": [
+        "### ⚠️ Testing Instructions for Documentation Site Upgrades",
+        "- [ ] Run `npm run build` (or yarn/pnpm equivalent) to ensure the Next.js static export passes.",
+        "- [ ] Check that links, components, and Markdown renderings look correct in staging.",
+        "- [ ] Ensure local Dev Mode launches successfully before merging."
+      ]
+    }
+  ]
+}
